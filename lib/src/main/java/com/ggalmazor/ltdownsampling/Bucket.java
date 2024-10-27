@@ -7,6 +7,11 @@ import java.util.function.Function;
 import static com.ggalmazor.ltdownsampling.Point.centerBetween;
 import static java.util.stream.Collectors.toList;
 
+/**
+ * This class represents a bucket of {@link Point} points being downsampled to a single point.
+ *
+ * @param <T> the type of the {@link Point} points in this bucket
+ */
 class Bucket<T extends Point> {
   private final List<T> data;
   private final T first;
@@ -22,33 +27,64 @@ class Bucket<T extends Point> {
     this.result = result;
   }
 
-  static <U extends Point> Bucket<U> of(List<U> us) {
-    U first = us.get(0);
-    U last = us.get(us.size() - 1);
+  /**
+   * Utility factory that takes a list of {@link Point} points and returns a {@link Bucket}
+   *
+   * @param points the input list of points in the bucket being built
+   * @return the bucket
+   * @param <U> the type of the {@link Point} points in the buket being built
+   */
+  static <U extends Point> Bucket<U> of(List<U> points) {
+    U first = points.get(0);
+    U last = points.get(points.size() - 1);
     DoublePoint center = centerBetween(first, last);
-    return new Bucket<>(us, first, last, center, first);
+    return new Bucket<>(points, first, last, center, first);
   }
 
-  static <U extends Point> Bucket<U> of(U u) {
-    return new Bucket<>(Collections.singletonList(u), u, u, u, u);
+  /**
+   * Utility factory that returns a {@link Bucket} bucket with a single {@link Point} point in it
+   *
+   * @param point the input point in the bucket being built
+   * @return the bucket
+   * @param <U> the type of the {@link Point} point in the buket being built
+   */
+  static <U extends Point> Bucket<U> of(U point) {
+    return new Bucket<>(Collections.singletonList(point), point, point, point, point);
   }
 
+  /**
+   * @return the resulting downsampled {@link Point} point for this bucket
+   */
   T getResult() {
     return result;
   }
 
+  /**
+   * @return the first {@link Point} point in this bucket
+   */
   T getFirst() {
     return first;
   }
 
+  /**
+   * @return the last {@link Point} point in this bucket
+   */
   T getLast() {
     return last;
   }
 
+  /**
+   * @return the {@link Point} at the center of this bucket
+   */
   Point getCenter() {
     return center;
   }
 
+  /**
+   * Utility function to {@link java.util.stream.Stream#map(Function)} over the points in this bucket
+   *
+   * @return the list of mapped points
+   */
   <U> List<U> map(Function<T, U> mapper) {
     return data.stream().map(mapper).collect(toList());
   }

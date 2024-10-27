@@ -21,3 +21,7 @@ java {
 tasks.named<Test>("test") {
   useJUnitPlatform()
 }
+
+tasks.javadoc {
+  source = sourceSets.main.get().allJava
+}
