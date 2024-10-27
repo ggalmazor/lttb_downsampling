@@ -26,3 +26,15 @@ tasks.named<Test>("test") {
 tasks.javadoc {
   source = sourceSets.main.get().allJava
 }
+
+publishing {
+  publications {
+    create<MavenPublication>("maven") {
+      groupId = "com.ggalmazor"
+      artifactId = "lttb_downsampling"
+      version = "1.0.2"
+
+      from(components["java"])
+    }
+  }
+}
