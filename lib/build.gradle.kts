@@ -8,9 +8,8 @@ repositories {
 
 dependencies {
   testImplementation(libs.junit.jupiter)
+  testImplementation("org.hamcrest:hamcrest:3.0")
   testRuntimeOnly("org.junit.platform:junit-platform-launcher")
-  api(libs.commons.math3)
-  implementation(libs.guava)
 }
 
 java {
