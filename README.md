@@ -1,5 +1,5 @@
 # Largest-Triangle downsampling algorithm implementations for Java8
-[![](https://jitpack.io/v/ggalmazor/lt_downsampling_java8.svg)](https://jitpack.io/#ggalmazor/lt_downsampling_java8)</br>
+[![](https://jitpack.io/v/ggalmazor/lttb_downsampling.svg)](https://jitpack.io/#ggalmazor/lttb_downsampling)</br>
 
 These implementations are based on the paper *"Downsampling Time Series for Visual Representation"* by Sveinn Steinarsson from the Faculty of Industrial Engineering, Mechanical Engineering and Computer Science University of Iceland (2013). You can read the paper [here](http://skemman.is/stream/get/1946/15343/37285/3/SS_MSthesis.pdf)
 
@@ -9,13 +9,13 @@ See how this algorithm compares to other algorithms designed to keep local extre
 
 ## Download
 
-Latest version: 0.1.0
+Latest version: 1.0.0
 
 You can add this library to your Maven/Gradle/SBT/Leiningen project using a couple of source repositories.
 
 ### JitPack.io
 
-Please follow the instructions at the [JitPack.io page for this project](https://jitpack.io/#ggalmazor/lt_downsampling_java8). Gradle example:
+Please follow the instructions at the [JitPack.io page for this project](https://jitpack.io/#ggalmazor/lttb_downsampling). Gradle example:
 
 ```groovy
 allprojects {
@@ -25,29 +25,7 @@ allprojects {
 }
 
 dependencies {
-  implementation 'com.github.ggalmazor:lt_downsampling_java8:0.1.0'
-}
-```
-
-### GithHub Package Repository
-
-⚠️ Warning: Access to Maven repos hosted by GitHub requires authentication. More information at https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-gradle-registry. 
-
-Please follow the instructions at the [GitHub Package Repository for this project](https://github.com/ggalmazor/lt_downsampling_java8/packages). Gradle example:
-
-```groovy
-repositories {
-    maven {
-        url = uri("https://maven.pkg.github.com/ggalmazor/lt_downsampling_java")
-        credentials {
-            username = project.findProperty("gpr.user") ?: System.getenv("USERNAME")
-            password = project.findProperty("gpr.key") ?: System.getenv("TOKEN")
-        }
-   }
-}
-
-dependencies {
-  implementation 'com.github.ggalmazor:lt_downsampling_java8:0.1.0'
+  implementation 'com.github.ggalmazor:lttb_downsampling:1.0.0'
 }
 ```
 
