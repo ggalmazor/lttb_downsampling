@@ -31,7 +31,12 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
       - name: Build with Gradle
-        run: ./gradlew javadoc --info
+        run: ./gradlew javadoc
+      - name: Setup upterm session
+        uses: lhotari/action-upterm@v1
+        with:
+          limit-access-to-actor: true
+          limit-access-to-users: ggalmazor
       - name: Deploy 🚀
         uses: JamesIves/github-pages-deploy-action@v4
         with:
