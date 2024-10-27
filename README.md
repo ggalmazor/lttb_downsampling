@@ -7,6 +7,8 @@ The goal of Largest-Triangle downsampling algorithms for data visualization is t
 
 See how this algorithm compares to other algorithms designed to keep local extrema in the input series at [ggalmazor.com/blog/evaluating_downsampling_algorithms.html](https://ggalmazor.com/blog/evaluating_downsampling_algorithms.html)
 
+Javadoc at [ggalmazor.com/lttb_downsampling](https://ggalmazor.com/lttb_downsampling)
+
 ## Download
 
 Latest version: 1.0.2
