@@ -6,7 +6,7 @@ import static java.util.Comparator.comparing;
 
 /**
  * This class represents the maximum area triangle defined by three consecutive {@link Bucket} buckets of points.
- *
+ * <p>
  * The maximum area triangle is defined by:
  * <ul>
  * <li>The result of the bucket at the left</li>
