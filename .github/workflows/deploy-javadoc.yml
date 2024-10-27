@@ -25,10 +25,9 @@ jobs:
       - name: Set up JDK 21
         uses: actions/setup-java@v4
         with:
-          java-version: ${{ matrix.java-version }}
+          java-version: 21
           distribution: 'temurin'
           cache: 'gradle'
-          version: 21
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
       - name: Build with Gradle
