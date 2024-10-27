@@ -9,7 +9,7 @@ See how this algorithm compares to other algorithms designed to keep local extre
 
 ## Download
 
-Latest version: 1.0.0
+Latest version: 1.0.2
 
 You can add this library to your Maven/Gradle/SBT/Leiningen project using a couple of source repositories.
 
@@ -25,7 +25,7 @@ allprojects {
 }
 
 dependencies {
-  implementation 'com.github.ggalmazor:lttb_downsampling:1.0.0'
+  implementation 'com.github.ggalmazor:lttb_downsampling:1.0.2'
 }
 ```
 
