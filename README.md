@@ -1,4 +1,4 @@
-# Largest-Triangle downsampling algorithm implementations for Java8
+# Largest-Triangle time-series downsampling algorithm implementation for modern Java
 [![](https://jitpack.io/v/ggalmazor/lttb_downsampling.svg)](https://jitpack.io/#ggalmazor/lttb_downsampling)</br>
 
 These implementations are based on the paper *"Downsampling Time Series for Visual Representation"* by Sveinn Steinarsson from the Faculty of Industrial Engineering, Mechanical Engineering and Computer Science University of Iceland (2013). You can read the paper [here](http://skemman.is/stream/get/1946/15343/37285/3/SS_MSthesis.pdf)
