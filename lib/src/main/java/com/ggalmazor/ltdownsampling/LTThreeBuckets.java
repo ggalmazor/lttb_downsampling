@@ -46,22 +46,23 @@ public final class LTThreeBuckets {
    * @param <T> the type of the {@link Point} elements in the input list
    */
   public static <T extends Point> List<T> sorted(List<T> input, int inputSize, int desiredBuckets) {
-    List<T> results = new ArrayList<>();
+    List<T> results = new ArrayList<>(desiredBuckets);
+    List<Bucket<T>> buckets = OnePassBucketizer.bucketize(input, inputSize, desiredBuckets);
 
-    OnePassBucketizer.bucketize(input, inputSize, desiredBuckets)
-      .stream()
-      .collect(sliding(3, 1))
-      .stream()
-      .map(Triangle::of)
-      .forEach(triangle -> {
-        if (results.isEmpty())
-          results.add(triangle.getFirst());
+    for (int i = 0; i <= buckets.size() - 3; i++) {
+      Triangle<T> triangle = Triangle.of(buckets.subList(i, i + 3));
 
-        results.add(triangle.getResult());
+      if (results.isEmpty()) {
+        results.add(triangle.getFirst());
+      }
 
-        if (results.size() == desiredBuckets + 1)
-          results.add(triangle.getLast());
-      });
+      results.add(triangle.getResult());
+
+      if (results.size() == desiredBuckets + 1) {
+        results.add(triangle.getLast());
+        break;
+      }
+    }
 
     return results;
   }
