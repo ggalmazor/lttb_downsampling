@@ -2,6 +2,11 @@
 
 ## `main`
 
+## Release 1.1.0
+
+- Added benchmarks
+- Refactored implementation to get a 3x to 4x performance boost
+
 ## Release 0.1.0
 
 - This lib no longer relies on `BigDecimal` to improve its performance and memory usage

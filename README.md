@@ -11,7 +11,7 @@ Javadoc at [ggalmazor.com/lttb_downsampling](https://ggalmazor.com/lttb_downsamp
 
 ## Download
 
-Latest version: 1.0.2
+Latest version: 1.1.0
 
 You can add this library to your Maven/Gradle/SBT/Leiningen project using a couple of source repositories.
 
@@ -27,7 +27,7 @@ allprojects {
 }
 
 dependencies {
-  implementation 'com.github.ggalmazor:lttb_downsampling:1.0.2'
+  implementation 'com.github.ggalmazor:lttb_downsampling:1.1.0'
 }
 ```
 
