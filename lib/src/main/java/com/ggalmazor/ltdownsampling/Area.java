@@ -29,12 +29,9 @@ class Area<T extends Point> {
    */
   static <U extends Point> Area<U> ofTriangle(Point a, U b, Point c) {
     // area of a triangle = |[Ax(By - Cy) + Bx(Cy - Ay) + Cx(Ay - By)] / 2|
-    List<Double> addends = Arrays.asList(
-      a.getX() * (b.getY() - c.getY()),
-      b.getX() * (c.getY() - a.getY()),
-      c.getX() * (a.getY() - b.getY())
-    );
-    double sum = addends.stream().reduce(0d, Double::sum);
+    double sum = a.getX() * (b.getY() - c.getY()) +
+                 b.getX() * (c.getY() - a.getY()) +
+                 c.getX() * (a.getY() - b.getY());
     double value = abs(sum / 2);
     return new Area<>(b, value);
   }
