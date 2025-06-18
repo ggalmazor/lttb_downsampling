@@ -1,11 +1,11 @@
 package com.ggalmazor.ltdownsampling;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
 
 import static com.ggalmazor.ltdownsampling.Point.centerBetween;
-import static java.util.stream.Collectors.toList;
 
 /**
  * This class represents a bucket of {@link Point} points being downsampled to a single point.
@@ -31,8 +31,8 @@ class Bucket<T extends Point> {
    * Utility factory that takes a list of {@link Point} points and returns a {@link Bucket}
    *
    * @param points the input list of points in the bucket being built
+   * @param <U>    the type of the {@link Point} points in the buket being built
    * @return the bucket
-   * @param <U> the type of the {@link Point} points in the buket being built
    */
   static <U extends Point> Bucket<U> of(List<U> points) {
     U first = points.get(0);
@@ -45,8 +45,8 @@ class Bucket<T extends Point> {
    * Utility factory that returns a {@link Bucket} bucket with a single {@link Point} point in it
    *
    * @param point the input point in the bucket being built
+   * @param <U>   the type of the {@link Point} point in the buket being built
    * @return the bucket
-   * @param <U> the type of the {@link Point} point in the buket being built
    */
   static <U extends Point> Bucket<U> of(U point) {
     return new Bucket<>(Collections.singletonList(point), point, point, point, point);
@@ -86,6 +86,10 @@ class Bucket<T extends Point> {
    * @return the list of mapped points
    */
   <U> List<U> map(Function<T, U> mapper) {
-    return data.stream().map(mapper).collect(toList());
+    List<U> result = new ArrayList<>(data.size());
+    for (T item : data) {
+      result.add(mapper.apply(item));
+    }
+    return result;
   }
 }

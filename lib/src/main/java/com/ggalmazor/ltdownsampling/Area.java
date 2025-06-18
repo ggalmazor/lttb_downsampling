@@ -1,12 +1,10 @@
 package com.ggalmazor.ltdownsampling;
 
-import java.util.Arrays;
-import java.util.List;
-
 import static java.lang.Math.abs;
 
 /**
  * Utility class for the triangle area computations. It also doubles as a DTO representing the area of the triangles involved in the algorithm
+ *
  * @param <T> type of the {@link Point} points defining instances of this class
  */
 class Area<T extends Point> {
@@ -21,20 +19,17 @@ class Area<T extends Point> {
   /**
    * Returns an instance of {@link Area} defined by three {@link Point} points
    *
-   * @param a first point of the triangle for the {@link Area} getting built
-   * @param b second point of the triangle for the {@link Area} getting built
-   * @param c third point of the triangle for the {@link Area} getting built
-   * @return the {@link Area} instance
+   * @param a   first point of the triangle for the {@link Area} getting built
+   * @param b   second point of the triangle for the {@link Area} getting built
+   * @param c   third point of the triangle for the {@link Area} getting built
    * @param <U> type of the {@link Point} points defining the triangle
+   * @return the {@link Area} instance
    */
   static <U extends Point> Area<U> ofTriangle(Point a, U b, Point c) {
     // area of a triangle = |[Ax(By - Cy) + Bx(Cy - Ay) + Cx(Ay - By)] / 2|
-    List<Double> addends = Arrays.asList(
-      a.getX() * (b.getY() - c.getY()),
-      b.getX() * (c.getY() - a.getY()),
-      c.getX() * (a.getY() - b.getY())
-    );
-    double sum = addends.stream().reduce(0d, Double::sum);
+    double sum = a.getX() * (b.getY() - c.getY()) +
+      b.getX() * (c.getY() - a.getY()) +
+      c.getX() * (a.getY() - b.getY());
     double value = abs(sum / 2);
     return new Area<>(b, value);
   }

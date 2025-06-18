@@ -3,8 +3,6 @@ package com.ggalmazor.ltdownsampling;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.ggalmazor.ltdownsampling.tools.CustomCollectors.sliding;
-
 /**
  * The LTThreeBuckets class is the main entry point to this library.
  * <p>
@@ -21,10 +19,10 @@ public final class LTThreeBuckets {
    * <li>This method doesn't mutate the input list or any of its elements.</li>
    * </ul>
    *
-   * @param input the input list of {@link Point} points to downsample
+   * @param input          the input list of {@link Point} points to downsample
    * @param desiredBuckets the desired number of elements for the downsampled output list
+   * @param <T>            the type of the {@link Point} elements in the input list
    * @return the downsampled output list
-   * @param <T> the type of the {@link Point} elements in the input list
    */
   public static <T extends Point> List<T> sorted(List<T> input, int desiredBuckets) {
     return sorted(input, input.size(), desiredBuckets);
@@ -39,29 +37,30 @@ public final class LTThreeBuckets {
    * <li>This method doesn't mutate the input list or any of its elements.</li>
    * </ul>
    *
-   * @param input the input list of {@link Point} points to downsample
-   * @param inputSize the size of the input list
+   * @param input          the input list of {@link Point} points to downsample
+   * @param inputSize      the size of the input list
    * @param desiredBuckets the desired number of elements for the downsampled output list
+   * @param <T>            the type of the {@link Point} elements in the input list
    * @return the downsampled output list
-   * @param <T> the type of the {@link Point} elements in the input list
    */
   public static <T extends Point> List<T> sorted(List<T> input, int inputSize, int desiredBuckets) {
-    List<T> results = new ArrayList<>();
+    List<T> results = new ArrayList<>(desiredBuckets);
+    List<Bucket<T>> buckets = OnePassBucketizer.bucketize(input, inputSize, desiredBuckets);
 
-    OnePassBucketizer.bucketize(input, inputSize, desiredBuckets)
-      .stream()
-      .collect(sliding(3, 1))
-      .stream()
-      .map(Triangle::of)
-      .forEach(triangle -> {
-        if (results.isEmpty())
-          results.add(triangle.getFirst());
+    for (int i = 0; i <= buckets.size() - 3; i++) {
+      Triangle<T> triangle = Triangle.of(buckets.subList(i, i + 3));
 
-        results.add(triangle.getResult());
+      if (results.isEmpty()) {
+        results.add(triangle.getFirst());
+      }
 
-        if (results.size() == desiredBuckets + 1)
-          results.add(triangle.getLast());
-      });
+      results.add(triangle.getResult());
+
+      if (results.size() == desiredBuckets + 1) {
+        results.add(triangle.getLast());
+        break;
+      }
+    }
 
     return results;
   }

@@ -2,8 +2,6 @@ package com.ggalmazor.ltdownsampling;
 
 import java.util.List;
 
-import static java.util.Comparator.comparing;
-
 /**
  * This class represents the maximum area triangle defined by three consecutive {@link Bucket} buckets of points.
  * <p>
@@ -29,8 +27,8 @@ class Triangle<T extends Point> {
    * Factory to build an instance of {@link Triangle} from a list of buckets. This factory only considers the first three buckets in the list.
    *
    * @param buckets the input list of buckets
+   * @param <U>     the type of {@link Point} in the input buckets
    * @return the {@link Triangle} instance formed by the first three buckets in the input list
-   * @param <U> the type of {@link Point} in the input buckets
    */
   static <U extends Point> Triangle<U> of(List<Bucket<U>> buckets) {
     return new Triangle<>(
@@ -58,10 +56,20 @@ class Triangle<T extends Point> {
    * @return the point of the middle bucket of this {@link Triangle} that produces the triangle with largest area
    */
   T getResult() {
-    return center.map(b -> Area.ofTriangle(left.getResult(), b, right.getCenter()))
-      .stream()
-      .max(comparing(Area::getValue))
-      .orElseThrow(() -> new RuntimeException("Can't obtain max area triangle"))
-      .getGenerator();
+    List<Area<T>> areas = center.map(b -> Area.ofTriangle(left.getResult(), b, right.getCenter()));
+
+    if (areas.isEmpty()) {
+      throw new RuntimeException("Can't obtain max area triangle");
+    }
+
+    Area<T> maxArea = areas.get(0);
+    for (int i = 1; i < areas.size(); i++) {
+      Area<T> currentArea = areas.get(i);
+      if (currentArea.getValue() > maxArea.getValue()) {
+        maxArea = currentArea;
+      }
+    }
+
+    return maxArea.getGenerator();
   }
 }

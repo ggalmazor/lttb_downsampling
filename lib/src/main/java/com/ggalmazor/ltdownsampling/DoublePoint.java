@@ -51,8 +51,8 @@ public class DoublePoint implements Point {
   @Override
   public String toString() {
     return "DoublePoint{" +
-        "x=" + x +
-        ", y=" + y +
-        '}';
+      "x=" + x +
+      ", y=" + y +
+      '}';
   }
 }

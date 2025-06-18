@@ -1,6 +1,7 @@
 plugins {
   `java-library`
   `maven-publish`
+  id("me.champeau.jmh") version "0.7.2"
 }
 
 repositories {
@@ -11,6 +12,9 @@ dependencies {
   testImplementation(libs.junit.jupiter)
   testImplementation("org.hamcrest:hamcrest:3.0")
   testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+
+  jmh("org.openjdk.jmh:jmh-core:1.37")
+  jmh("org.openjdk.jmh:jmh-generator-annprocess:1.37")
 }
 
 java {
@@ -37,4 +41,12 @@ publishing {
       from(components["java"])
     }
   }
+}
+
+jmh {
+  iterations = 5
+  warmupIterations = 3
+  fork = 2
+  benchmarkMode = listOf("avgt")
+  timeUnit = "ms"
 }
