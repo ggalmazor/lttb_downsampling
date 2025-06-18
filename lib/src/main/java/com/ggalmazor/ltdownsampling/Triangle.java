@@ -58,10 +58,20 @@ class Triangle<T extends Point> {
    * @return the point of the middle bucket of this {@link Triangle} that produces the triangle with largest area
    */
   T getResult() {
-    return center.map(b -> Area.ofTriangle(left.getResult(), b, right.getCenter()))
-      .stream()
-      .max(comparing(Area::getValue))
-      .orElseThrow(() -> new RuntimeException("Can't obtain max area triangle"))
-      .getGenerator();
+    List<Area<T>> areas = center.map(b -> Area.ofTriangle(left.getResult(), b, right.getCenter()));
+
+    if (areas.isEmpty()) {
+      throw new RuntimeException("Can't obtain max area triangle");
+    }
+
+    Area<T> maxArea = areas.get(0);
+    for (int i = 1; i < areas.size(); i++) {
+      Area<T> currentArea = areas.get(i);
+      if (currentArea.getValue() > maxArea.getValue()) {
+        maxArea = currentArea;
+      }
+    }
+
+    return maxArea.getGenerator();
   }
 }
