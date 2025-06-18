@@ -1,5 +1,6 @@
 package com.ggalmazor.ltdownsampling;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
@@ -86,6 +87,10 @@ class Bucket<T extends Point> {
    * @return the list of mapped points
    */
   <U> List<U> map(Function<T, U> mapper) {
-    return data.stream().map(mapper).collect(toList());
+    List<U> result = new ArrayList<>(data.size());
+    for (T item : data) {
+      result.add(mapper.apply(item));
+    }
+    return result;
   }
 }
