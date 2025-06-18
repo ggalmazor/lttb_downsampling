@@ -3,8 +3,6 @@ package com.ggalmazor.ltdownsampling;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.ggalmazor.ltdownsampling.tools.CustomCollectors.sliding;
-
 /**
  * The LTThreeBuckets class is the main entry point to this library.
  * <p>
@@ -21,10 +19,10 @@ public final class LTThreeBuckets {
    * <li>This method doesn't mutate the input list or any of its elements.</li>
    * </ul>
    *
-   * @param input the input list of {@link Point} points to downsample
+   * @param input          the input list of {@link Point} points to downsample
    * @param desiredBuckets the desired number of elements for the downsampled output list
+   * @param <T>            the type of the {@link Point} elements in the input list
    * @return the downsampled output list
-   * @param <T> the type of the {@link Point} elements in the input list
    */
   public static <T extends Point> List<T> sorted(List<T> input, int desiredBuckets) {
     return sorted(input, input.size(), desiredBuckets);
@@ -39,11 +37,11 @@ public final class LTThreeBuckets {
    * <li>This method doesn't mutate the input list or any of its elements.</li>
    * </ul>
    *
-   * @param input the input list of {@link Point} points to downsample
-   * @param inputSize the size of the input list
+   * @param input          the input list of {@link Point} points to downsample
+   * @param inputSize      the size of the input list
    * @param desiredBuckets the desired number of elements for the downsampled output list
+   * @param <T>            the type of the {@link Point} elements in the input list
    * @return the downsampled output list
-   * @param <T> the type of the {@link Point} elements in the input list
    */
   public static <T extends Point> List<T> sorted(List<T> input, int inputSize, int desiredBuckets) {
     List<T> results = new ArrayList<>(desiredBuckets);

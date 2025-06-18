@@ -5,16 +5,6 @@ package com.ggalmazor.ltdownsampling;
  */
 public interface Point {
   /**
-   * @return the x horizontal (time) value of this point
-   */
-  double getX();
-
-  /**
-   * @return the y vertical value of this point
-   */
-  double getY();
-
-  /**
    * Utility method to compute the geometric center point of the segment linking the provided <code>a</code> and <code>b</code> points
    *
    * @param a the first point of the segment
@@ -26,4 +16,14 @@ public interface Point {
     DoublePoint halfVector = new DoublePoint(((Point) vector).getX() / 2, ((Point) vector).getY() / 2);
     return new DoublePoint(a.getX() + halfVector.getX(), a.getY() + halfVector.getY());
   }
+
+  /**
+   * @return the x horizontal (time) value of this point
+   */
+  double getX();
+
+  /**
+   * @return the y vertical value of this point
+   */
+  double getY();
 }

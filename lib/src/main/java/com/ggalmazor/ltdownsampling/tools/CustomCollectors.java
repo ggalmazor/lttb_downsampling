@@ -12,8 +12,8 @@ public class CustomCollectors {
    * Collects a {@link java.util.stream.Stream} into lists of consecutive elements in groups of the provided <code>size</code> without overlaps or gaps
    *
    * @param size the size of the output lists
+   * @param <T>  the type of elements in the {@link java.util.stream.Stream} being collected
    * @return a list of lists
-   * @param <T> the type of elements in the {@link java.util.stream.Stream} being collected
    */
   public static <T> Collector<T, ?, List<List<T>>> sliding(int size) {
     return new SlidingCollector<>(size, 1);
@@ -30,8 +30,8 @@ public class CustomCollectors {
    *
    * @param size the number of elements on each list element in the output list
    * @param step the number of input elements to skip after each list element in the output list
+   * @param <T>  the type of elements in the {@link java.util.stream.Stream} being collected
    * @return a list of lists
-   * @param <T> the type of elements in the {@link java.util.stream.Stream} being collected
    */
   public static <T> Collector<T, ?, List<List<T>>> sliding(int size, int step) {
     return new SlidingCollector<>(size, step);

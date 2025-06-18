@@ -13,11 +13,11 @@ class OnePassBucketizer {
   /**
    * Returns the list of {@link Bucket} buckets from the <code>input</code> list of points and using the provided <code>inputSize</code> and <code>desiredBuckets</code> params
    *
-   * @param input the input list of points
-   * @param inputSize the size of the input list of points
+   * @param input          the input list of points
+   * @param inputSize      the size of the input list of points
    * @param desiredBuckets the desired bucket size
+   * @param <T>            the type of the {@link Point} points in the input list
    * @return the list of buckets
-   * @param <T> the type of the {@link Point} points in the input list
    */
   static <T extends Point> List<Bucket<T>> bucketize(List<T> input, int inputSize, int desiredBuckets) {
     int middleSize = inputSize - 2;
