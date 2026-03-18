@@ -1,5 +1,6 @@
 # Largest-Triangle time-series downsampling algorithm implementation for modern Java
-[![](https://jitpack.io/v/ggalmazor/lttb_downsampling.svg)](https://jitpack.io/#ggalmazor/lttb_downsampling)</br>
+[![Maven Central](https://img.shields.io/maven-central/v/com.ggalmazor/lttb_downsampling.svg)](https://central.sonatype.com/artifact/com.ggalmazor/lttb_downsampling)
+[![CI](https://github.com/ggalmazor/lttb_downsampling/actions/workflows/ci.yml/badge.svg)](https://github.com/ggalmazor/lttb_downsampling/actions/workflows/ci.yml)
 
 These implementations are based on the paper *"Downsampling Time Series for Visual Representation"* by Sveinn Steinarsson from the Faculty of Industrial Engineering, Mechanical Engineering and Computer Science University of Iceland (2013). You can read the paper [here](http://skemman.is/stream/get/1946/15343/37285/3/SS_MSthesis.pdf)
 
@@ -9,26 +10,36 @@ See how this algorithm compares to other algorithms designed to keep local extre
 
 Javadoc at [ggalmazor.com/lttb_downsampling](https://ggalmazor.com/lttb_downsampling)
 
+## Java version support
+
+| Version | Java baseline | Status                  |
+|---------|---------------|-------------------------|
+| 17.x.x  | Java 17       | Active (bug fixes only) |
+| 21.x.x  | Java 21       | Planned                 |
+| 25.x.x  | Java 25       | Planned                 |
+
+The library version number reflects the minimum Java version required to use it.
+
 ## Download
 
-Latest version: 1.1.0
+Latest version: 17.0.0
 
-You can add this library to your Maven/Gradle/SBT/Leiningen project using a couple of source repositories.
+### Maven Central
 
-### JitPack.io
+Maven:
 
-Please follow the instructions at the [JitPack.io page for this project](https://jitpack.io/#ggalmazor/lttb_downsampling). Gradle example:
+```xml
+<dependency>
+  <groupId>com.ggalmazor</groupId>
+  <artifactId>lttb_downsampling</artifactId>
+  <version>17.0.0</version>
+</dependency>
+```
 
-```groovy
-allprojects {
-  repositories {
-    maven { url 'https://jitpack.io' }
-  }
-}
+Gradle:
 
-dependencies {
-  implementation 'com.github.ggalmazor:lttb_downsampling:1.1.0'
-}
+```kotlin
+implementation("com.ggalmazor:lttb_downsampling:17.0.0")
 ```
 
 ## Largest-Triangle Three-Buckets
@@ -70,6 +81,18 @@ These are close-ups for 250, 500, 1000, and 2000 buckets with raw data in the ba
 ![image](https://user-images.githubusercontent.com/205913/202486337-b402dd24-44dd-4456-af3d-add931e7fbd7.png)
 ![image](https://user-images.githubusercontent.com/205913/202486396-ff3772d3-ef69-4c69-b56c-4ac16964ed04.png)
 
+
+## Contributing
+
+This project enforces [Google Java Style](https://google.github.io/styleguide/javaguide.html) via Checkstyle. The configuration lives in `config/checkstyle/`. Run it with:
+
+```bash
+./gradlew checkstyleMain
+```
+
+Checkstyle runs automatically as part of `./gradlew build`. The `test` and `jmh` source sets are excluded from Checkstyle. The only active suppression is an inline `@SuppressWarnings` on `LTThreeBuckets` to allow the `LT` domain abbreviation.
+
+The JDK version is managed by [mise](https://mise.jdx.dev/). Run `mise install` to get the correct JDK for this project.
 
 ## Other Java implementations you might want to check
 

@@ -2,6 +2,21 @@
 
 ## `main`
 
+## Release 17.0.0
+
+- Migrated to versioning scheme aligned with Java LTS versions (Java 17 → 17.x.x)
+- Published to Maven Central (previously JitPack only)
+- Added Maven Central publish workflow (`publish.yml`) triggered on semver tags
+- Added Checkstyle (Google Java Style) enforced on `main` sources via `./gradlew checkstyleMain`
+- CI matrix trimmed to LTS versions only: Java 17, 21, 25
+- Removed unused `commons-math3` and `guava` entries from version catalog
+- Fixed redundant cast `((Point) vector)` in `Point.centerBetween`
+- Fixed braceless `if` in `OnePassBucketizer`
+- Fixed `RuntimeException` in `Triangle.getResult()` replaced with `IllegalStateException`
+- Added private constructor to `LTThreeBuckets`
+- Fixed all Javadoc style issues across main sources
+- Fixed import ordering across main sources (static imports first)
+
 ## Release 1.1.0
 
 - Added benchmarks
