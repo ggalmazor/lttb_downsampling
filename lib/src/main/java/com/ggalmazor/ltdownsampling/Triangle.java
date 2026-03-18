@@ -28,26 +28,9 @@ class Triangle<T extends Point> {
   }
 
   /**
-   * Factory to build an instance of {@link Triangle} from a list of buckets.
-   *
-   * <p>This factory only considers the first three buckets in the list.
-   *
-   * @param buckets the input list of buckets
-   * @param <U>     the type of {@link Point} in the input buckets
-   * @return the {@link Triangle} instance formed by the first three buckets in the input list
-   */
-  static <U extends Point> Triangle<U> of(List<Bucket<U>> buckets) {
-    return new Triangle<>(
-        buckets.get(0),
-        buckets.get(1),
-        buckets.get(2)
-    );
-  }
-
-  /**
    * Factory to build an instance of {@link Triangle} from a list of buckets at a given offset.
    *
-   * <p>Avoids allocating a {@code subList} view object on each call in the hot loop.
+   * <p>Uses direct index access to avoid allocating a {@code subList} view per iteration.
    *
    * @param buckets the full list of buckets
    * @param offset  the index of the left bucket in the window
@@ -63,28 +46,10 @@ class Triangle<T extends Point> {
   }
 
   /**
-   * Returns the first point of the set of three buckets composing this {@link Triangle}.
-   *
-   * @return the first point of the set of three buckets composing this {@link Triangle}
-   */
-  T getFirst() {
-    return left.getFirst();
-  }
-
-  /**
-   * Returns the last point of the set of three buckets composing this {@link Triangle}.
-   *
-   * @return the last point of the set of three buckets composing this {@link Triangle}
-   */
-  T getLast() {
-    return right.getLast();
-  }
-
-  /**
    * Returns the point of the middle bucket that produces the triangle with the largest area.
    *
    * <p>Iterates candidates directly without allocating an intermediate collection or per-candidate
-   * {@link Area} records.
+   * objects, using {@link Area#ofTriangle} as a pure scalar computation.
    *
    * @return the point of the middle bucket of this {@link Triangle} that produces the largest area
    */
@@ -96,7 +61,7 @@ class Triangle<T extends Point> {
     double bestArea = -1.0;
 
     for (T candidate : center.points()) {
-      double area = Area.rawArea(leftPoint, candidate, rightCenter);
+      double area = Area.ofTriangle(leftPoint, candidate, rightCenter);
       if (area > bestArea) {
         bestArea = area;
         bestPoint = candidate;
