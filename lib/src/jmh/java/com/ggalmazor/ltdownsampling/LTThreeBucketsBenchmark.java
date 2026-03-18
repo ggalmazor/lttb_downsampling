@@ -1,11 +1,23 @@
 package com.ggalmazor.ltdownsampling;
 
-import org.openjdk.jmh.annotations.*;
-import org.openjdk.jmh.infra.Blackhole;
-
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.concurrent.TimeUnit;
+
+import org.openjdk.jmh.annotations.Benchmark;
+import org.openjdk.jmh.annotations.BenchmarkMode;
+import org.openjdk.jmh.annotations.Fork;
+import org.openjdk.jmh.annotations.Level;
+import org.openjdk.jmh.annotations.Measurement;
+import org.openjdk.jmh.annotations.Mode;
+import org.openjdk.jmh.annotations.OutputTimeUnit;
+import org.openjdk.jmh.annotations.Param;
+import org.openjdk.jmh.annotations.Scope;
+import org.openjdk.jmh.annotations.Setup;
+import org.openjdk.jmh.annotations.State;
+import org.openjdk.jmh.annotations.Warmup;
+import org.openjdk.jmh.infra.Blackhole;
 
 @BenchmarkMode(Mode.AverageTime)
 @OutputTimeUnit(TimeUnit.MILLISECONDS)
@@ -15,10 +27,13 @@ import java.util.concurrent.TimeUnit;
 @Measurement(iterations = 5, time = 1, timeUnit = TimeUnit.SECONDS)
 public class LTThreeBucketsBenchmark {
 
-  @Param({"1000000", "2000000", "5000000"})
+  // Fixed seed for reproducible, cross-version comparable results
+  private static final long SEED = 0xDEADBEEFL;
+
+  @Param({"10000", "100000", "500000"})
   private int dataSize;
 
-  @Param({"1000", "5000", "10000"})
+  @Param({"100", "1000", "5000"})
   private int desiredBuckets;
 
   private List<DoublePoint> data;
@@ -29,37 +44,25 @@ public class LTThreeBucketsBenchmark {
   }
 
   @Benchmark
-  public void benchmarkLTThreeBuckets(Blackhole bh) {
-    List<DoublePoint> result = LTThreeBuckets.sorted(data, desiredBuckets);
-    bh.consume(result);
+  public void downsample(Blackhole bh) {
+    bh.consume(LTThreeBuckets.sorted(data, desiredBuckets));
   }
 
   @Benchmark
-  public void benchmarkLTThreeBucketsWithSize(Blackhole bh) {
-    List<DoublePoint> result = LTThreeBuckets.sorted(data, data.size(), desiredBuckets);
-    bh.consume(result);
+  public void bucketize(Blackhole bh) {
+    bh.consume(OnePassBucketizer.bucketize(data, data.size(), desiredBuckets));
   }
 
   private List<DoublePoint> generateTestData(int size) {
+    Random random = new Random(SEED);
     List<DoublePoint> points = new ArrayList<>(size);
-
-    // Generate realistic time series data with some noise
     double baseValue = 100.0;
-    double trend = 0.001; // Small upward trend
-
+    double trend = 0.001;
     for (int i = 0; i < size; i++) {
       double x = i;
-      double y = baseValue + (trend * i) + (Math.sin(i * 0.01) * 10) + (Math.random() * 5 - 2.5);
+      double y = baseValue + (trend * i) + (Math.sin(i * 0.01) * 10) + (random.nextDouble() * 5 - 2.5);
       points.add(new DoublePoint(x, y));
     }
-
     return points;
-  }
-
-  // Additional benchmark for measuring individual components
-  @Benchmark
-  public void benchmarkBucketization(Blackhole bh) {
-    List<Bucket<DoublePoint>> buckets = OnePassBucketizer.bucketize(data, data.size(), desiredBuckets);
-    bh.consume(buckets);
   }
 }
