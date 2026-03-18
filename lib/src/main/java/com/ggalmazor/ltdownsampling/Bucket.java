@@ -89,6 +89,18 @@ class Bucket<T extends Point> {
   }
 
   /**
+   * Returns a read-only view of the points in this bucket.
+   *
+   * <p>Used in the hot inner loop of {@link Triangle#getResult()} to iterate candidates
+   * without allocating an intermediate mapped collection.
+   *
+   * @return an unmodifiable view of the points in this bucket
+   */
+  List<T> points() {
+    return Collections.unmodifiableList(data);
+  }
+
+  /**
    * Maps the points in this bucket using the provided mapper function.
    *
    * @param mapper the mapping function to apply to each point

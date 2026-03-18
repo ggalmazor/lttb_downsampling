@@ -30,4 +30,24 @@ record Area<T extends Point>(T generator, double value) {
         + c.x() * (a.y() - b.y());
     return new Area<>(b, abs(sum / 2));
   }
+
+  /**
+   * Computes the triangle area scalar for the three provided points without allocating an
+   * {@link Area} record.
+   *
+   * <p>Used in the hot inner loop of {@link Triangle#getResult()} to avoid per-candidate
+   * allocations.
+   *
+   * @param a first point of the triangle
+   * @param b second (middle) point of the triangle
+   * @param c third point of the triangle
+   * @return the area of the triangle as a scalar double value
+   */
+  static double rawArea(Point a, Point b, Point c) {
+    // area of a triangle = |[Ax(By - Cy) + Bx(Cy - Ay) + Cx(Ay - By)] / 2|
+    double sum = a.x() * (b.y() - c.y())
+        + b.x() * (c.y() - a.y())
+        + c.x() * (a.y() - b.y());
+    return abs(sum / 2);
+  }
 }
