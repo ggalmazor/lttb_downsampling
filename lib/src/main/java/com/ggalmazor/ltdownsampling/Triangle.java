@@ -77,11 +77,11 @@ class Triangle<T extends Point> {
     Area<T> maxArea = areas.get(0);
     for (int i = 1; i < areas.size(); i++) {
       Area<T> currentArea = areas.get(i);
-      if (currentArea.getValue() > maxArea.getValue()) {
+      if (currentArea.value() > maxArea.value()) {
         maxArea = currentArea;
       }
     }
 
-    return maxArea.getGenerator();
+    return maxArea.generator();
   }
 }

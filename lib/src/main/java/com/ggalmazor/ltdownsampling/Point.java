@@ -16,9 +16,9 @@ public interface Point {
    * @return a {@link DoublePoint} in the geometric center between the two provided points
    */
   static DoublePoint centerBetween(Point a, Point b) {
-    DoublePoint vector = new DoublePoint(b.getX() - a.getX(), b.getY() - a.getY());
-    DoublePoint halfVector = new DoublePoint(vector.getX() / 2, vector.getY() / 2);
-    return new DoublePoint(a.getX() + halfVector.getX(), a.getY() + halfVector.getY());
+    DoublePoint vector = new DoublePoint(b.x() - a.x(), b.y() - a.y());
+    DoublePoint halfVector = new DoublePoint(vector.x() / 2, vector.y() / 2);
+    return new DoublePoint(a.x() + halfVector.x(), a.y() + halfVector.y());
   }
 
   /**
@@ -26,12 +26,12 @@ public interface Point {
    *
    * @return the x horizontal (time) value of this point
    */
-  double getX();
+  double x();
 
   /**
    * Returns the y vertical value of this point.
    *
    * @return the y vertical value of this point
    */
-  double getY();
+  double y();
 }

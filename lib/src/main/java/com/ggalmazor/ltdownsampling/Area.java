@@ -3,57 +3,31 @@ package com.ggalmazor.ltdownsampling;
 import static java.lang.Math.abs;
 
 /**
- * Utility class for the triangle area computations.
+ * Represents the area of a triangle in the LTTB algorithm, paired with the {@link Point} that
+ * generated it.
  *
- * <p>It doubles as a DTO representing the area of the triangles involved in the algorithm.
+ * <p>The generator is the point at the middle bucket — the candidate point being evaluated.
  *
- * @param <T> type of the {@link Point} points defining instances of this class
+ * @param generator the {@link Point} that produced this area
+ * @param value     the triangle area value
+ * @param <T>       type of the generator {@link Point}
  */
-class Area<T extends Point> {
-  private final T generator;
-  private final double value;
-
-  private Area(T generator, double value) {
-    this.generator = generator;
-    this.value = value;
-  }
+record Area<T extends Point>(T generator, double value) {
 
   /**
    * Returns an instance of {@link Area} defined by three {@link Point} points.
    *
-   * @param a   first point of the triangle for the {@link Area} getting built
-   * @param b   second point of the triangle for the {@link Area} getting built
-   * @param c   third point of the triangle for the {@link Area} getting built
-   * @param <U> type of the {@link Point} points defining the triangle
+   * @param a   first point of the triangle
+   * @param b   second (middle) point of the triangle — becomes the generator
+   * @param c   third point of the triangle
+   * @param <U> type of the generator {@link Point}
    * @return the {@link Area} instance
    */
   static <U extends Point> Area<U> ofTriangle(Point a, U b, Point c) {
     // area of a triangle = |[Ax(By - Cy) + Bx(Cy - Ay) + Cx(Ay - By)] / 2|
-    double sum = a.getX() * (b.getY() - c.getY())
-        + b.getX() * (c.getY() - a.getY())
-        + c.getX() * (a.getY() - b.getY());
-    double areaValue = abs(sum / 2);
-    return new Area<>(b, areaValue);
-  }
-
-  /**
-   * Returns the generator {@link Point} for this area.
-   *
-   * <p>In the LTTB algorithm, the generator is the point at the middle in the time dimension,
-   * since it's the only point that belongs to the bucket being downsampled.
-   *
-   * @return the generator {@link Point} point
-   */
-  T getGenerator() {
-    return generator;
-  }
-
-  /**
-   * Returns the area value of this {@link Area} instance.
-   *
-   * @return the area of this {@link Area} instance
-   */
-  public double getValue() {
-    return value;
+    double sum = a.x() * (b.y() - c.y())
+        + b.x() * (c.y() - a.y())
+        + c.x() * (a.y() - b.y());
+    return new Area<>(b, abs(sum / 2));
   }
 }

@@ -35,8 +35,8 @@ class Bucket<T extends Point> {
    * @return the bucket
    */
   static <U extends Point> Bucket<U> of(List<U> points) {
-    U first = points.get(0);
-    U last = points.get(points.size() - 1);
+    U first = points.getFirst();
+    U last = points.getLast();
     DoublePoint center = centerBetween(first, last);
     return new Bucket<>(points, first, last, center, first);
   }
