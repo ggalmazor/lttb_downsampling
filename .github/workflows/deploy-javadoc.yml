@@ -7,46 +7,78 @@ on:
       - v[0-9]+.[0-9]+.[0-9]+
 
 permissions:
-  contents: read
-  pages: write
-  id-token: write
+  contents: write
 
 concurrency:
   group: "pages"
   cancel-in-progress: false
 
 jobs:
-  build:
+  deploy:
     runs-on: ubuntu-latest
     steps:
       - name: Check out the code
         uses: actions/checkout@v6
 
-      - name: Set up JDK 21
+      - name: Extract version from tag
+        id: version
+        run: echo "version=${GITHUB_REF_NAME#v}" >> $GITHUB_OUTPUT
+
+      - name: Set up JDK
         uses: actions/setup-java@v5
         with:
-          java-version: 21
+          java-version: ${{ startsWith(steps.version.outputs.version, '17') && '17' || startsWith(steps.version.outputs.version, '21') && '21' || '25' }}
           distribution: 'oracle'
           cache: 'gradle'
 
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
-      - name: Build with Gradle
+      - name: Build Javadoc
         run: ./gradlew javadoc
 
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v4
+      - name: Check out gh-pages branch
+        uses: actions/checkout@v6
         with:
-          path: lib/build/docs/javadoc/
+          ref: gh-pages
+          path: gh-pages
 
-  deploy:
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    runs-on: ubuntu-latest
-    needs: build
-    steps:
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+      - name: Publish versioned Javadoc
+        env:
+          VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          # Copy Javadoc into versioned directory
+          rm -rf gh-pages/$VERSION
+          cp -r lib/build/docs/javadoc/ gh-pages/$VERSION
+
+          # Update latest/ to point to this version
+          rm -rf gh-pages/latest
+          cp -r lib/build/docs/javadoc/ gh-pages/latest
+
+          # Regenerate index.html listing all versions
+          cd gh-pages
+          {
+            echo '<!DOCTYPE html>'
+            echo '<html lang="en"><head><meta charset="UTF-8">'
+            echo '<title>lttb_downsampling Javadoc</title>'
+            echo '<style>body{font-family:sans-serif;max-width:600px;margin:2rem auto}'
+            echo 'a{display:block;margin:.5rem 0;font-size:1.1rem}</style>'
+            echo '</head><body>'
+            echo '<h1>lttb_downsampling Javadoc</h1>'
+            echo '<p><a href="latest/"><strong>latest</strong></a></p>'
+            echo '<h2>All versions</h2>'
+            for dir in $(ls -d [0-9]*/ 2>/dev/null | sort -Vr); do
+              v="${dir%/}"
+              echo "<a href=\"$v/\">$v</a>"
+            done
+            echo '</body></html>'
+          } > index.html
+
+      - name: Push to gh-pages
+        run: |
+          cd gh-pages
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add .
+          git diff --cached --quiet || git commit -m "Deploy Javadoc for v${{ steps.version.outputs.version }}"
+          git push
