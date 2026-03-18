@@ -2,6 +2,18 @@
 
 ## `main`
 
+## Release 17.2.0
+
+- Added `BucketizationStrategy` enum with `DYNAMIC` (existing default) and `FIXED` variants,
+  corresponding to the dynamic and fixed bucket size strategies from the original LTTB paper
+- `DYNAMIC` — equal point count per bucket (existing behaviour, unchanged)
+- `FIXED` — equal x-span per bucket; better for unevenly distributed or gappy data. Empty
+  x-intervals are silently skipped, so output may have fewer than `desiredBuckets + 2` points
+- New `LTThreeBuckets.sorted(input, desiredBuckets, strategy)` and
+  `sorted(input, inputSize, desiredBuckets, strategy)` overloads
+- Added `@contract` note to `Point.getX()` Javadoc documenting the monotonicity requirement
+- Added `OnePassBucketizerTest` with direct unit tests for both strategies
+
 ## Release 17.1.0
 
 - Performance: `Point.centerBetween()` reduced from 3 allocations and 10 arithmetic ops to 1
