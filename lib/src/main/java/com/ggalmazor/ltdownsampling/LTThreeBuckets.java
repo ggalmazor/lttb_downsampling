@@ -5,22 +5,28 @@ import java.util.List;
 
 /**
  * The LTThreeBuckets class is the main entry point to this library.
- * <p>
- * None of the methods in this class will mutate input lists or their elements.
+ *
+ * <p>None of the methods in this class will mutate input lists or their elements.
  */
+@SuppressWarnings("checkstyle:AbbreviationAsWordInName") // LT is a domain abbreviation (Largest Triangle)
 public final class LTThreeBuckets {
 
+  private LTThreeBuckets() {}
+
   /**
-   * Returns a new {@link java.util.List} of {@link Point} with a downsampled version of the provided <code>input</code> list. The output list will have as many elements as the provided <code>desiredBuckets</code> param.
-   * <p>
-   * Notes:
+   * Returns a downsampled version of the provided {@code input} list.
+   *
+   * <p>Notes:
    * <ul>
-   * <li>The input list must be sorted</li>
+   * <li>The input list must be sorted.</li>
    * <li>This method doesn't mutate the input list or any of its elements.</li>
    * </ul>
    *
+   * <p>The output list will have {@code desiredBuckets + 2} elements: one per bucket plus the
+   * first and last points of the original series.
+   *
    * @param input          the input list of {@link Point} points to downsample
-   * @param desiredBuckets the desired number of elements for the downsampled output list
+   * @param desiredBuckets the desired number of buckets for the downsampled output list
    * @param <T>            the type of the {@link Point} elements in the input list
    * @return the downsampled output list
    */
@@ -29,17 +35,20 @@ public final class LTThreeBuckets {
   }
 
   /**
-   * Returns a new {@link java.util.List} of {@link Point} with a downsampled version of the provided <code>input</code> list. The output list will have as many elements as the provided <code>desiredBuckets</code> param.
-   * <p>
-   * Notes:
+   * Returns a downsampled version of the provided {@code input} list.
+   *
+   * <p>Notes:
    * <ul>
-   * <li>The input list must be sorted</li>
+   * <li>The input list must be sorted.</li>
    * <li>This method doesn't mutate the input list or any of its elements.</li>
    * </ul>
    *
+   * <p>The output list will have {@code desiredBuckets + 2} elements: one per bucket plus the
+   * first and last points of the original series.
+   *
    * @param input          the input list of {@link Point} points to downsample
    * @param inputSize      the size of the input list
-   * @param desiredBuckets the desired number of elements for the downsampled output list
+   * @param desiredBuckets the desired number of buckets for the downsampled output list
    * @param <T>            the type of the {@link Point} elements in the input list
    * @return the downsampled output list
    */

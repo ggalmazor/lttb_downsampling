@@ -1,19 +1,25 @@
 package com.ggalmazor.ltdownsampling.tools;
 
-import java.util.*;
+import static java.lang.Integer.max;
+import static java.util.stream.Collectors.toList;
+
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.EnumSet;
+import java.util.List;
+import java.util.Queue;
+import java.util.Set;
 import java.util.function.BiConsumer;
 import java.util.function.BinaryOperator;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collector;
 
-import static java.lang.Integer.max;
-import static java.util.stream.Collectors.toList;
-
 /**
- * This class implements a sliding window collector for {@link java.util.stream.Stream} streams
- * <p>
- * Copied from <a href="http://www.nurkiewicz.com/2014/07/grouping-sampling-and-batching-custom.html">...</a>
+ * Implements a sliding window collector for {@link java.util.stream.Stream} streams.
+ *
+ * <p>Copied from
+ * <a href="http://www.nurkiewicz.com/2014/07/grouping-sampling-and-batching-custom.html">...</a>
  */
 public class SlidingCollector<T> implements Collector<T, List<List<T>>, List<List<T>>> {
 
@@ -24,7 +30,7 @@ public class SlidingCollector<T> implements Collector<T, List<List<T>>, List<Lis
   private int totalIn = 0;
 
   /**
-   * Creates a new {@link SlidingCollector} instance with the provided configuration
+   * Creates a new {@link SlidingCollector} instance with the provided configuration.
    *
    * @param size the number of elements on each list element in the output list
    * @param step the number of input elements to skip after each list element in the output list
@@ -36,7 +42,7 @@ public class SlidingCollector<T> implements Collector<T, List<List<T>>, List<Lis
   }
 
   /**
-   * A function that creates and returns a new mutable result container.
+   * Returns a function that creates and returns a new mutable result container.
    *
    * @return a function which returns a new, mutable result container
    */
@@ -46,7 +52,7 @@ public class SlidingCollector<T> implements Collector<T, List<List<T>>, List<Lis
   }
 
   /**
-   * A function that folds a value into a mutable result container.
+   * Returns a function that folds a value into a mutable result container.
    *
    * @return a function which folds a value into a mutable result container
    */
@@ -63,15 +69,13 @@ public class SlidingCollector<T> implements Collector<T, List<List<T>>, List<Lis
   }
 
   /**
-   * Perform the final transformation from the intermediate accumulation type
-   * {@code A} to the final result type {@code R}.
+   * Performs the final transformation from the intermediate accumulation type {@code A} to the
+   * final result type {@code R}.
    *
-   * <p>If the characteristic {@code IDENTITY_FINISH} is
-   * set, this function may be presumed to be an identity transform with an
-   * unchecked cast from {@code A} to {@code R}.
+   * <p>If the characteristic {@code IDENTITY_FINISH} is set, this function may be presumed to be
+   * an identity transform with an unchecked cast from {@code A} to {@code R}.
    *
-   * @return a function which transforms the intermediate result to the final
-   * result
+   * @return a function which transforms the intermediate result to the final result
    */
   @Override
   public Function<List<List<T>>, List<List<T>>> finisher() {
@@ -102,12 +106,12 @@ public class SlidingCollector<T> implements Collector<T, List<List<T>>, List<Lis
   }
 
   /**
-   * A function that accepts two partial results and merges them.  The
-   * combiner function may fold state from one argument into the other and
-   * return that, or may return a new result container.
+   * Returns a function that accepts two partial results and merges them.
    *
-   * @return a function which combines two partial results into a combined
-   * result
+   * <p>The combiner function may fold state from one argument into the other and return that,
+   * or may return a new result container.
+   *
+   * @return a function which combines two partial results into a combined result
    */
   @Override
   public BinaryOperator<List<List<T>>> combiner() {
@@ -117,8 +121,8 @@ public class SlidingCollector<T> implements Collector<T, List<List<T>>, List<Lis
   }
 
   /**
-   * Returns a {@code Set} of {@code Collector.Characteristics} indicating
-   * the characteristics of this Collector.  This set should be immutable.
+   * Returns a {@code Set} of {@code Collector.Characteristics} indicating the characteristics
+   * of this Collector.
    *
    * @return an immutable set of collector characteristics
    */

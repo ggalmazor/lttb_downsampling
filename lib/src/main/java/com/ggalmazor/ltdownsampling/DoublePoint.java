@@ -1,14 +1,15 @@
 package com.ggalmazor.ltdownsampling;
 
 /**
- * This class provides a basic {@link Point} implementation on {@link Double} values to be used with {@link LTThreeBuckets#sorted}.
+ * Basic {@link Point} implementation backed by {@code double} values, for use with
+ * {@link LTThreeBuckets#sorted}.
  */
 public class DoublePoint implements Point {
   private final double x;
   private final double y;
 
   /**
-   * Returns a new {@link DoublePoint} with the provided <code>x</code>, and <code>y</code> Double values
+   * Creates a new {@link DoublePoint} with the provided {@code x} and {@code y} values.
    *
    * @param x the double value of the point in the horizontal dimension (time)
    * @param y the double value of the point in the vertical dimension
@@ -19,7 +20,7 @@ public class DoublePoint implements Point {
   }
 
   /**
-   * Utility factory for {@link DoublePoint} that takes abstract {@link Number} x and y values
+   * Utility factory for {@link DoublePoint} that accepts abstract {@link Number} values.
    *
    * @param x the value of the point in the horizontal dimension (time)
    * @param y the value of the point in the vertical dimension
@@ -30,6 +31,8 @@ public class DoublePoint implements Point {
   }
 
   /**
+   * Returns the x horizontal (time) value of this point.
+   *
    * @return the x horizontal (time) value of this point
    */
   @Override
@@ -38,6 +41,8 @@ public class DoublePoint implements Point {
   }
 
   /**
+   * Returns the y vertical value of this point.
+   *
    * @return the y vertical value of this point
    */
   @Override
@@ -46,13 +51,15 @@ public class DoublePoint implements Point {
   }
 
   /**
+   * Returns the text representation of this point.
+   *
    * @return the text representation of this point
    */
   @Override
   public String toString() {
-    return "DoublePoint{" +
-      "x=" + x +
-      ", y=" + y +
-      '}';
+    return "DoublePoint{"
+        + "x=" + x
+        + ", y=" + y
+        + '}';
   }
 }

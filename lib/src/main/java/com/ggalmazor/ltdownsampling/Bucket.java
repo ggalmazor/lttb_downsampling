@@ -1,11 +1,11 @@
 package com.ggalmazor.ltdownsampling;
 
+import static com.ggalmazor.ltdownsampling.Point.centerBetween;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
-
-import static com.ggalmazor.ltdownsampling.Point.centerBetween;
 
 /**
  * This class represents a bucket of {@link Point} points being downsampled to a single point.
@@ -28,10 +28,10 @@ class Bucket<T extends Point> {
   }
 
   /**
-   * Utility factory that takes a list of {@link Point} points and returns a {@link Bucket}
+   * Utility factory that takes a list of {@link Point} points and returns a {@link Bucket}.
    *
    * @param points the input list of points in the bucket being built
-   * @param <U>    the type of the {@link Point} points in the buket being built
+   * @param <U>    the type of the {@link Point} points in the bucket being built
    * @return the bucket
    */
   static <U extends Point> Bucket<U> of(List<U> points) {
@@ -42,10 +42,10 @@ class Bucket<T extends Point> {
   }
 
   /**
-   * Utility factory that returns a {@link Bucket} bucket with a single {@link Point} point in it
+   * Utility factory that returns a {@link Bucket} with a single {@link Point} point in it.
    *
    * @param point the input point in the bucket being built
-   * @param <U>   the type of the {@link Point} point in the buket being built
+   * @param <U>   the type of the {@link Point} point in the bucket being built
    * @return the bucket
    */
   static <U extends Point> Bucket<U> of(U point) {
@@ -53,6 +53,8 @@ class Bucket<T extends Point> {
   }
 
   /**
+   * Returns the resulting downsampled {@link Point} point for this bucket.
+   *
    * @return the resulting downsampled {@link Point} point for this bucket
    */
   T getResult() {
@@ -60,6 +62,8 @@ class Bucket<T extends Point> {
   }
 
   /**
+   * Returns the first {@link Point} point in this bucket.
+   *
    * @return the first {@link Point} point in this bucket
    */
   T getFirst() {
@@ -67,6 +71,8 @@ class Bucket<T extends Point> {
   }
 
   /**
+   * Returns the last {@link Point} point in this bucket.
+   *
    * @return the last {@link Point} point in this bucket
    */
   T getLast() {
@@ -74,6 +80,8 @@ class Bucket<T extends Point> {
   }
 
   /**
+   * Returns the {@link Point} at the center of this bucket.
+   *
    * @return the {@link Point} at the center of this bucket
    */
   Point getCenter() {
@@ -81,8 +89,10 @@ class Bucket<T extends Point> {
   }
 
   /**
-   * Utility function to {@link java.util.stream.Stream#map(Function)} over the points in this bucket
+   * Maps the points in this bucket using the provided mapper function.
    *
+   * @param mapper the mapping function to apply to each point
+   * @param <U>    the type of the mapped result
    * @return the list of mapped points
    */
   <U> List<U> map(Function<T, U> mapper) {
