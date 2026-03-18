@@ -101,8 +101,8 @@ public final class LTThreeBuckets {
     double[] ys = new double[size];
     for (int i = 0; i < size; i++) {
       DoublePoint p = input.get(i);
-      xs[i] = p.x();
-      ys[i] = p.y();
+      xs[i] = p.getX();
+      ys[i] = p.getY();
     }
 
     @SuppressWarnings("unchecked")
@@ -116,9 +116,9 @@ public final class LTThreeBuckets {
     stream.forEach(i -> middleResults[i] = selectBestDoublePoint(buckets, xs, ys, i));
 
     List<DoublePoint> results = new ArrayList<>(desiredBuckets + 2);
-    results.add(buckets.getFirst().getFirst());
+    results.add(buckets.get(0).getFirst());
     results.addAll(Arrays.asList(middleResults));
-    results.add(buckets.getLast().getLast());
+    results.add(buckets.get(buckets.size() - 1).getLast());
     return results;
   }
 
@@ -135,17 +135,17 @@ public final class LTThreeBuckets {
     Bucket<DoublePoint> center = buckets.get(offset + 1);
     Bucket<DoublePoint> right = buckets.get(offset + 2);
 
-    double lx = left.getResult().x();
-    double ly = left.getResult().y();
-    double rx = right.getCenter().x();
-    double ry = right.getCenter().y();
+    double lx = left.getResult().getX();
+    double ly = left.getResult().getY();
+    double rx = right.getCenter().getX();
+    double ry = right.getCenter().getY();
 
     DoublePoint bestPoint = null;
     double bestArea = -1.0;
 
     for (DoublePoint candidate : center.points()) {
-      double cx = candidate.x();
-      double cy = candidate.y();
+      double cx = candidate.getX();
+      double cy = candidate.getY();
       // area of a triangle = |[Ax(By - Cy) + Bx(Cy - Ay) + Cx(Ay - By)] / 2|
       double area = Math.abs(lx * (cy - ry) + cx * (ry - ly) + rx * (ly - cy)) / 2.0;
       if (area > bestArea) {
@@ -178,9 +178,9 @@ public final class LTThreeBuckets {
     stream.forEach(i -> middleResults[i] = Triangle.of(buckets, i).getResult());
 
     List<T> results = new ArrayList<>(desiredBuckets + 2);
-    results.add(buckets.getFirst().getFirst());
+    results.add(buckets.get(0).getFirst());
     results.addAll(Arrays.asList(middleResults));
-    results.add(buckets.getLast().getLast());
+    results.add(buckets.get(buckets.size() - 1).getLast());
     return results;
   }
 }
