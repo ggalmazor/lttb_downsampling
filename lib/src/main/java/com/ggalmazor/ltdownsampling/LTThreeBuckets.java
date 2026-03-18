@@ -40,8 +40,33 @@ public final class LTThreeBuckets {
    * @return the downsampled output list
    */
   public static <T extends Point> List<T> sorted(List<T> input, int desiredBuckets) {
-    return sorted(input, input.size(), desiredBuckets);
+    return sorted(input, input.size(), desiredBuckets, BucketizationStrategy.DYNAMIC);
   }
+
+  /**
+   * Returns a downsampled version of the provided {@code input} list using the specified
+   * {@link BucketizationStrategy}.
+   *
+   * <p>Notes:
+   * <ul>
+   * <li>The input list must be sorted by {@link Point#x()}.</li>
+   * <li>This method doesn't mutate the input list or any of its elements.</li>
+   * </ul>
+   *
+   * <p>When {@link BucketizationStrategy#FIXED} is used, empty x-intervals are skipped
+   * and the output may have fewer than {@code desiredBuckets + 2} points.
+   *
+   * @param input          the input list of {@link Point} points to downsample
+   * @param desiredBuckets the desired number of buckets for the downsampled output list
+   * @param strategy       the bucketization strategy to use
+   * @param <T>            the type of the {@link Point} elements in the input list
+   * @return the downsampled output list
+   */
+  public static <T extends Point> List<T> sorted(
+      List<T> input, int desiredBuckets, BucketizationStrategy strategy) {
+    return sorted(input, input.size(), desiredBuckets, strategy);
+  }
+
 
   /**
    * Returns a downsampled version of the provided {@code input} list.
@@ -69,7 +94,40 @@ public final class LTThreeBuckets {
    * @return the downsampled output list
    */
   public static <T extends Point> List<T> sorted(List<T> input, int inputSize, int desiredBuckets) {
-    List<Bucket<T>> buckets = OnePassBucketizer.bucketize(input, inputSize, desiredBuckets);
+    return sorted(input, inputSize, desiredBuckets, BucketizationStrategy.DYNAMIC);
+  }
+
+  /**
+   * Returns a downsampled version of the provided {@code input} list using the specified
+   * {@link BucketizationStrategy}.
+   *
+   * <p>Notes:
+   * <ul>
+   * <li>The input list must be sorted by {@link Point#x()}.</li>
+   * <li>This method doesn't mutate the input list or any of its elements.</li>
+   * </ul>
+   *
+   * <p>When {@link BucketizationStrategy#FIXED} is used, empty x-intervals are skipped
+   * and the output may have fewer than {@code desiredBuckets + 2} points.
+   *
+   * <p>When the input contains {@link DoublePoint} instances, an optimised struct-of-arrays
+   * path is used: x and y coordinates are extracted into contiguous {@code double[]} arrays
+   * before the selection loop, eliminating per-point pointer chasing in the hot path.
+   *
+   * <p>When {@code desiredBuckets} exceeds {@value #PARALLEL_THRESHOLD}, the triangle-selection
+   * loop runs in parallel using the common {@link java.util.concurrent.ForkJoinPool}.
+   *
+   * @param input          the input list of {@link Point} points to downsample
+   * @param inputSize      the size of the input list
+   * @param desiredBuckets the desired number of buckets for the downsampled output list
+   * @param strategy       the bucketization strategy to use
+   * @param <T>            the type of the {@link Point} elements in the input list
+   * @return the downsampled output list
+   */
+  public static <T extends Point> List<T> sorted(
+      List<T> input, int inputSize, int desiredBuckets, BucketizationStrategy strategy) {
+    List<Bucket<T>> buckets = OnePassBucketizer.bucketize(input, inputSize, desiredBuckets, strategy);
+    int actualBuckets = buckets.size() - 2; // excludes first and last sentinel buckets
 
     // Check whether we can use the DoublePoint struct-of-arrays fast path
     if (!input.isEmpty() && input.get(0) instanceof DoublePoint) {
@@ -78,11 +136,11 @@ public final class LTThreeBuckets {
       @SuppressWarnings("unchecked")
       List<Bucket<DoublePoint>> dpBuckets = (List<Bucket<DoublePoint>>) (List<?>) buckets;
       @SuppressWarnings("unchecked")
-      List<T> result = (List<T>) sortedDoublePoint(dpInput, dpBuckets, desiredBuckets);
+      List<T> result = (List<T>) sortedDoublePoint(dpInput, dpBuckets, actualBuckets);
       return result;
     }
 
-    return sortedGeneric(buckets, desiredBuckets);
+    return sortedGeneric(buckets, actualBuckets);
   }
 
   /**
