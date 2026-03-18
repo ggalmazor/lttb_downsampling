@@ -9,11 +9,14 @@ import java.util.List;
  *
  * <p>In LTTB, the first and last buckets always include a single point corresponding to the
  * first and last points of the input series.
+ *
+ * <p>Two strategies are supported; see {@link BucketizationStrategy}.
  */
 class OnePassBucketizer {
 
   /**
-   * Returns the list of {@link Bucket} buckets from the {@code input} list of points.
+   * Returns the list of {@link Bucket} buckets from the {@code input} list of points using the
+   * count-based strategy.
    *
    * @param input          the input list of points
    * @param inputSize      the size of the input list of points
@@ -22,6 +25,37 @@ class OnePassBucketizer {
    * @return the list of buckets
    */
   static <T extends Point> List<Bucket<T>> bucketize(List<T> input, int inputSize, int desiredBuckets) {
+    return bucketize(input, inputSize, desiredBuckets, BucketizationStrategy.DYNAMIC);
+  }
+
+  /**
+   * Returns the list of {@link Bucket} buckets from the {@code input} list of points using the
+   * specified {@link BucketizationStrategy}.
+   *
+   * @param input          the input list of points
+   * @param inputSize      the size of the input list of points
+   * @param desiredBuckets the desired bucket count
+   * @param strategy       the bucketization strategy to use
+   * @param <T>            the type of the {@link Point} points in the input list
+   * @return the list of buckets
+   */
+  static <T extends Point> List<Bucket<T>> bucketize(
+      List<T> input, int inputSize, int desiredBuckets, BucketizationStrategy strategy) {
+    return switch (strategy) {
+      case DYNAMIC -> bucketizeByCount(input, inputSize, desiredBuckets);
+      case FIXED -> bucketizeByFixedSpan(input, desiredBuckets);
+    };
+  }
+
+  /**
+   * Divides the input into buckets of equal point count.
+   *
+   * <p>Bucket boundaries are computed as {@code floor(middleSize / desiredBuckets)}, with
+   * the remainder distributed one extra point at a time across the first buckets.
+   * Middle buckets are represented as {@code subList} views — no element copying occurs.
+   */
+  private static <T extends Point> List<Bucket<T>> bucketizeByCount(
+      List<T> input, int inputSize, int desiredBuckets) {
     int middleSize = inputSize - 2;
     int bucketSize = middleSize / desiredBuckets;
     int remainingElements = middleSize % desiredBuckets;
@@ -34,24 +68,74 @@ class OnePassBucketizer {
 
     List<Bucket<T>> buckets = new ArrayList<>(desiredBuckets + 2);
 
-    // Add first point as the only point in the first bucket
+    // First point in its own bucket
     buckets.add(Bucket.of(input.get(0)));
 
-    // Add middle buckets using index-based iteration to avoid subList operations
-    int currentIndex = 1; // Start after the first element
+    // Middle buckets as subList views — O(1) per bucket, no element copying
+    int currentIndex = 1;
     for (int bucketIndex = 0; bucketIndex < desiredBuckets; bucketIndex++) {
       int currentBucketSize = bucketIndex < remainingElements ? bucketSize + 1 : bucketSize;
-
-      List<T> bucketData = new ArrayList<>(currentBucketSize);
-      for (int i = 0; i < currentBucketSize; i++) {
-        bucketData.add(input.get(currentIndex + i));
-      }
-
-      buckets.add(Bucket.of(bucketData));
-      currentIndex += currentBucketSize;
+      int end = currentIndex + currentBucketSize;
+      buckets.add(Bucket.of(input.subList(currentIndex, end)));
+      currentIndex = end;
     }
 
-    // Add last point as the only point in the last bucket
+    // Last point in its own bucket
+    buckets.add(Bucket.of(input.get(input.size() - 1)));
+
+    return buckets;
+  }
+
+  /**
+   * Divides the input into buckets of equal x-span.
+   *
+   * <p>The total x range {@code [x_first, x_last]} is split into {@code desiredBuckets}
+   * equal-width intervals. Each point (excluding the first and last) is assigned to the
+   * interval that contains its {@link Point#x()} value. Empty intervals are silently skipped,
+   * so the returned list may contain fewer than {@code desiredBuckets + 2} buckets.
+   *
+   * <p>Requires that {@code Point#x()} is monotonically non-decreasing.
+   */
+  private static <T extends Point> List<Bucket<T>> bucketizeByFixedSpan(
+      List<T> input, int desiredBuckets) {
+    if (input.size() < 2) {
+      throw new IllegalArgumentException(
+          "Fixed-span bucketization requires at least 2 points");
+    }
+
+    double x0 = input.get(0).x();
+    double x1 = input.get(input.size() - 1).x();
+    double bucketWidth = (x1 - x0) / desiredBuckets;
+
+    if (bucketWidth == 0) {
+      throw new IllegalArgumentException(
+          "Fixed-span bucketization requires points with distinct x() values");
+    }
+
+    // Group middle points (excluding first and last) into x-span windows
+    List<List<T>> windows = new ArrayList<>(desiredBuckets);
+    for (int i = 0; i < desiredBuckets; i++) {
+      windows.add(new ArrayList<>());
+    }
+
+    int lastBucketIndex = desiredBuckets - 1;
+    for (int i = 1; i < input.size() - 1; i++) {
+      T point = input.get(i);
+      int bucketIndex = (int) ((point.x() - x0) / bucketWidth);
+      // Clamp to last bucket to handle floating-point edge cases at x1
+      windows.get(Math.min(bucketIndex, lastBucketIndex)).add(point);
+    }
+
+    // Build bucket list, skipping empty windows
+    List<Bucket<T>> buckets = new ArrayList<>(desiredBuckets + 2);
+    buckets.add(Bucket.of(input.get(0)));
+
+    for (List<T> window : windows) {
+      if (!window.isEmpty()) {
+        buckets.add(Bucket.of(window));
+      }
+    }
+
     buckets.add(Bucket.of(input.get(input.size() - 1)));
 
     return buckets;
