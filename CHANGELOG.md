@@ -2,6 +2,16 @@
 
 ## `main`
 
+## Release 21.0.0
+
+- Raised Java baseline to 21
+- `DoublePoint` converted to a `record` (breaking: `getX()`/`getY()` replaced by `x()`/`y()`)
+- `Area<T>` converted to a `record` (internal, no API impact)
+- `Triangle` fields split to one per line (style)
+- `Bucket.of()` uses `getFirst()`/`getLast()` (Java 21 `SequencedCollection`)
+- `SlidingCollector.combiner()` uses unnamed variables `(_, _)`
+- CI matrix: Java 21, 25
+
 ## Release 17.0.0
 
 - Migrated to versioning scheme aligned with Java LTS versions (Java 17 → 17.x.x)

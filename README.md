@@ -15,14 +15,14 @@ Javadoc at [ggalmazor.com/lttb_downsampling](https://ggalmazor.com/lttb_downsamp
 | Version | Java baseline | Status                  |
 |---------|---------------|-------------------------|
 | 17.x.x  | Java 17       | Active (bug fixes only) |
-| 21.x.x  | Java 21       | Planned                 |
+| 21.x.x  | Java 21       | Active                  |
 | 25.x.x  | Java 25       | Planned                 |
 
 The library version number reflects the minimum Java version required to use it.
 
 ## Download
 
-Latest version: 17.0.0
+Latest version: 21.0.0
 
 ### Maven Central
 
@@ -32,15 +32,26 @@ Maven:
 <dependency>
   <groupId>com.ggalmazor</groupId>
   <artifactId>lttb_downsampling</artifactId>
-  <version>17.0.0</version>
+  <version>21.0.0</version>
 </dependency>
 ```
 
 Gradle:
 
 ```kotlin
-implementation("com.ggalmazor:lttb_downsampling:17.0.0")
+implementation("com.ggalmazor:lttb_downsampling:21.0.0")
 ```
+
+### Migrating from 17.x
+
+`DoublePoint` is now a `record`. The accessor methods changed:
+
+| Before | After |
+|--------|-------|
+| `point.getX()` | `point.x()` |
+| `point.getY()` | `point.y()` |
+
+If you implement the `Point` interface directly, no change is needed.
 
 ## Largest-Triangle Three-Buckets
 
