@@ -2,6 +2,22 @@
 
 ## `main`
 
+## Release 17.1.0
+
+- Performance: `Point.centerBetween()` reduced from 3 allocations and 10 arithmetic ops to 1
+  allocation and 4 ops
+- Performance: `OnePassBucketizer` now uses `subList` views instead of copying elements into a new
+  `ArrayList` per bucket — eliminates `O(desiredBuckets)` intermediate list allocations
+- Performance: `Triangle.getResult()` inlines the max-finding loop directly, eliminating the
+  intermediate `List<Area>` and all per-candidate `Area` record allocations
+- Performance: `LTThreeBuckets.sorted()` uses a struct-of-arrays fast path for `DoublePoint`
+  inputs — coordinates are extracted into contiguous `double[]` arrays once before the
+  selection loop, eliminating per-point pointer chasing in the hot path
+- Performance: Triangle selection loop runs in parallel via `ForkJoinPool` when
+  `desiredBuckets >= 512`, using disjoint array slots to avoid race conditions
+- Cleanup: removed dead `Area.ofTriangle()`, `Triangle.getFirst/getLast/of(List)`,
+  `Bucket.map()`, and the entire `tools` subpackage (`SlidingCollector`, `CustomCollectors`)
+
 ## Release 17.0.0
 
 - Migrated to versioning scheme aligned with Java LTS versions (Java 17 → 17.x.x)

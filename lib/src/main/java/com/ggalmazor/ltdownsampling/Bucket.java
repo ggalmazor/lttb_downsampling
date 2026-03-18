@@ -2,10 +2,8 @@ package com.ggalmazor.ltdownsampling;
 
 import static com.ggalmazor.ltdownsampling.Point.centerBetween;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.function.Function;
 
 /**
  * This class represents a bucket of {@link Point} points being downsampled to a single point.
@@ -100,18 +98,4 @@ class Bucket<T extends Point> {
     return Collections.unmodifiableList(data);
   }
 
-  /**
-   * Maps the points in this bucket using the provided mapper function.
-   *
-   * @param mapper the mapping function to apply to each point
-   * @param <U>    the type of the mapped result
-   * @return the list of mapped points
-   */
-  <U> List<U> map(Function<T, U> mapper) {
-    List<U> result = new ArrayList<>(data.size());
-    for (T item : data) {
-      result.add(mapper.apply(item));
-    }
-    return result;
-  }
 }
