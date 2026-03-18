@@ -36,7 +36,7 @@ mavenPublishing {
   publishToMavenCentral(automaticRelease = true)
   signAllPublications()
 
-  coordinates("com.ggalmazor", "lttb_downsampling", "25.1.0")
+  coordinates("com.ggalmazor", "lttb_downsampling", "25.2.0")
 
   pom {
     name.set("lttb_downsampling")

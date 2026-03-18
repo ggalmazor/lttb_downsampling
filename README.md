@@ -41,7 +41,7 @@ Project Valhalla value classes once JEP 401 exits preview.
 
 ## Download
 
-Latest version: 25.1.0
+Latest version: 25.2.0
 
 ### Maven Central
 
@@ -51,14 +51,14 @@ Maven:
 <dependency>
   <groupId>com.ggalmazor</groupId>
   <artifactId>lttb_downsampling</artifactId>
-  <version>25.1.0</version>
+  <version>25.2.0</version>
 </dependency>
 ```
 
 Gradle:
 
 ```kotlin
-implementation("com.ggalmazor:lttb_downsampling:25.1.0")
+implementation("com.ggalmazor:lttb_downsampling:25.2.0")
 ```
 
 ### Migrating from 17.x to 21.x
@@ -75,21 +75,45 @@ If you implement the `Point` interface directly, update your `getX()`/`getY()` m
 
 ## Largest-Triangle Three-Buckets
 
-This version of the algorithm groups numbers in buckets of the same size and then selects the point
-that produces the largest area from each bucket with points in neighbouring buckets.
+This library implements the LTTB algorithm, which groups points into buckets and selects the point
+from each bucket that forms the largest triangle with its neighbours. Two bucketization strategies
+are available, corresponding directly to the dynamic and fixed bucket sizes described in the
+original paper.
 
-You can produce a downsampled version of an input series with:
+### `DYNAMIC` — equal point count per bucket (default)
+
+Each bucket contains the same number of points. This is the right choice when samples are evenly
+distributed across the x-axis.
 
 ```java
 List<DoublePoint> input = List.of(...);
-int numberOfBuckets = 200;
 
-List<DoublePoint> output = LTThreeBuckets.sorted(input, numberOfBuckets);
+// Default: DYNAMIC strategy
+List<DoublePoint> output = LTThreeBuckets.sorted(input, 200);
 ```
 
-The first and last points of the original series are always in the output. The rest are grouped into
-the defined number of buckets, and the algorithm chooses the best point from each bucket, resulting
-in a list of 202 elements.
+The first and last points of the input are always preserved. The output always contains exactly
+`desiredBuckets + 2` points.
+
+### `FIXED` — equal x-span per bucket
+
+The x range `[x_first, x_last]` is divided into equal-width intervals. Each point is assigned to
+the interval containing its `x()` value. This is the right choice for unevenly distributed data
+or series with gaps — dense regions and sparse regions receive proportionally sized buckets
+regardless of how many points they contain.
+
+```java
+import static com.ggalmazor.ltdownsampling.BucketizationStrategy.FIXED;
+
+List<DoublePoint> output = LTThreeBuckets.sorted(input, 200, FIXED);
+```
+
+**Empty-interval behaviour:** x-intervals that contain no points are silently skipped. This means
+the output may have **fewer than `desiredBuckets + 2` points** when the input has gaps. For
+example, requesting 10 buckets on a series with 3 empty intervals will produce at most 9 output
+points. Callers should not assume a fixed output size when using `FIXED`.
+
+`x()` must be monotonically non-decreasing across the input list for both strategies.
 
 ## Notes on Point types
 
