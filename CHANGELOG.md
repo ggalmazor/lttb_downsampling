@@ -2,6 +2,12 @@
 
 ## `main`
 
+## Release 25.0.0
+
+- Raised Java baseline to 25
+- `SlidingCollector.combiner()` uses unnamed variables `(_, _)` (finalized in Java 22)
+- CI matrix: Java 25 only
+
 ## Release 21.0.0
 
 - Raised Java baseline to 21

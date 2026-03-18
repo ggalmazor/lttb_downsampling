@@ -16,13 +16,13 @@ Javadoc at [ggalmazor.com/lttb_downsampling](https://ggalmazor.com/lttb_downsamp
 |---------|---------------|-------------------------|
 | 17.x.x  | Java 17       | Active (bug fixes only) |
 | 21.x.x  | Java 21       | Active                  |
-| 25.x.x  | Java 25       | Planned                 |
+| 25.x.x  | Java 25       | Active                  |
 
 The library version number reflects the minimum Java version required to use it.
 
 ## Download
 
-Latest version: 21.0.0
+Latest version: 25.0.0
 
 ### Maven Central
 
@@ -32,14 +32,14 @@ Maven:
 <dependency>
   <groupId>com.ggalmazor</groupId>
   <artifactId>lttb_downsampling</artifactId>
-  <version>21.0.0</version>
+  <version>25.0.0</version>
 </dependency>
 ```
 
 Gradle:
 
 ```kotlin
-implementation("com.ggalmazor:lttb_downsampling:21.0.0")
+implementation("com.ggalmazor:lttb_downsampling:25.0.0")
 ```
 
 ### Migrating from 17.x
