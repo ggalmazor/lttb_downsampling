@@ -13,12 +13,12 @@ public class DateSeriesPoint implements Point {
   }
 
   @Override
-  public double getX() {
+  public double x() {
     return (double) date.atStartOfDay().atOffset(ZoneOffset.UTC).toEpochSecond();
   }
 
   @Override
-  public double getY() {
+  public double y() {
     return value;
   }
 

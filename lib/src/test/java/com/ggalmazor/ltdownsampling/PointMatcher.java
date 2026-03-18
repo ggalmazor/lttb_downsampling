@@ -19,7 +19,7 @@ public class PointMatcher extends TypeSafeMatcher<Point> {
 
   @Override
   protected boolean matchesSafely(Point point) {
-    return point.getX() == x && point.getY() == y;
+    return point.x() == x && point.y() == y;
   }
 
   @Override

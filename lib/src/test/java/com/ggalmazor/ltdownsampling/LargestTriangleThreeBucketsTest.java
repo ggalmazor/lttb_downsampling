@@ -148,7 +148,7 @@ public class LargestTriangleThreeBucketsTest {
         double value = Double.parseDouble(cols[1]);
         return new DateSeriesPoint(date, value);
       })
-      .sorted(comparing(Point::getX))
+      .sorted(comparing(Point::x))
       .collect(toList());
 
     List<DateSeriesPoint> output = LTThreeBuckets.sorted(series, 10);
