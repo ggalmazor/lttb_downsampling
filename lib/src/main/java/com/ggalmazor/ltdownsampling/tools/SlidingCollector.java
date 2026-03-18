@@ -115,7 +115,7 @@ public class SlidingCollector<T> implements Collector<T, List<List<T>>, List<Lis
    */
   @Override
   public BinaryOperator<List<List<T>>> combiner() {
-    return (left, right) -> {
+    return (_, _) -> {
       throw new UnsupportedOperationException("Combining not possible");
     };
   }
