@@ -1,6 +1,7 @@
 plugins {
   `java-library`
-  `maven-publish`
+  checkstyle
+  id("com.vanniktech.maven.publish") version "0.36.0"
   id("me.champeau.jmh") version "0.7.3"
 }
 
@@ -31,17 +32,48 @@ tasks.javadoc {
   source = sourceSets.main.get().allJava
 }
 
-publishing {
-  publications {
-    create<MavenPublication>("maven") {
-      groupId = "com.ggalmazor"
-      artifactId = "lttb_downsampling"
-      version = "1.0.2"
+mavenPublishing {
+  publishToMavenCentral(automaticRelease = true)
+  signAllPublications()
 
-      from(components["java"])
+  coordinates("com.ggalmazor", "lttb_downsampling", "17.0.0")
+
+  pom {
+    name.set("lttb_downsampling")
+    description.set("Largest-Triangle Three-Buckets time-series downsampling algorithm for modern Java")
+    inceptionYear.set("2016")
+    url.set("https://github.com/ggalmazor/lttb_downsampling")
+    licenses {
+      license {
+        name.set("Apache-2.0")
+        url.set("https://www.apache.org/licenses/LICENSE-2.0.txt")
+        distribution.set("repo")
+      }
+    }
+    developers {
+      developer {
+        id.set("ggalmazor")
+        name.set("Guillermo Gutierrez Almazor")
+        url.set("https://github.com/ggalmazor/")
+      }
+    }
+    scm {
+      url.set("https://github.com/ggalmazor/lttb_downsampling/")
+      connection.set("scm:git:git://github.com/ggalmazor/lttb_downsampling.git")
+      developerConnection.set("scm:git:ssh://git@github.com/ggalmazor/lttb_downsampling.git")
     }
   }
 }
+
+checkstyle {
+  toolVersion = "10.21.4"
+  configFile = file("../config/checkstyle/checkstyle.xml")
+  configProperties["org.checkstyle.google.suppressionfilter.config"] =
+    file("../config/checkstyle/checkstyle-suppressions.xml").absolutePath
+}
+
+tasks.named<Checkstyle>("checkstyleTest") { isEnabled = false }
+tasks.named<Checkstyle>("checkstyleJmh") { isEnabled = false }
 
 jmh {
   iterations = 5
