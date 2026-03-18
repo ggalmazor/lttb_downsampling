@@ -28,60 +28,50 @@ class Triangle<T extends Point> {
   }
 
   /**
-   * Factory to build an instance of {@link Triangle} from a list of buckets.
+   * Factory to build an instance of {@link Triangle} from a list of buckets at a given offset.
    *
-   * <p>This factory only considers the first three buckets in the list.
+   * <p>Uses direct index access to avoid allocating a {@code subList} view per iteration.
    *
-   * @param buckets the input list of buckets
+   * @param buckets the full list of buckets
+   * @param offset  the index of the left bucket in the window
    * @param <U>     the type of {@link Point} in the input buckets
-   * @return the {@link Triangle} instance formed by the first three buckets in the input list
+   * @return the {@link Triangle} instance formed by buckets at offset, offset+1, offset+2
    */
-  static <U extends Point> Triangle<U> of(List<Bucket<U>> buckets) {
+  static <U extends Point> Triangle<U> of(List<Bucket<U>> buckets, int offset) {
     return new Triangle<>(
-        buckets.get(0),
-        buckets.get(1),
-        buckets.get(2)
+        buckets.get(offset),
+        buckets.get(offset + 1),
+        buckets.get(offset + 2)
     );
-  }
-
-  /**
-   * Returns the first point of the set of three buckets composing this {@link Triangle}.
-   *
-   * @return the first point of the set of three buckets composing this {@link Triangle}
-   */
-  T getFirst() {
-    return left.getFirst();
-  }
-
-  /**
-   * Returns the last point of the set of three buckets composing this {@link Triangle}.
-   *
-   * @return the last point of the set of three buckets composing this {@link Triangle}
-   */
-  T getLast() {
-    return right.getLast();
   }
 
   /**
    * Returns the point of the middle bucket that produces the triangle with the largest area.
    *
+   * <p>Iterates candidates directly without allocating an intermediate collection or per-candidate
+   * objects, using {@link Area#ofTriangle} as a pure scalar computation.
+   *
    * @return the point of the middle bucket of this {@link Triangle} that produces the largest area
    */
   T getResult() {
-    List<Area<T>> areas = center.map(b -> Area.ofTriangle(left.getResult(), b, right.getCenter()));
+    Point leftPoint = left.getResult();
+    Point rightCenter = right.getCenter();
 
-    if (areas.isEmpty()) {
-      throw new IllegalStateException("Can't obtain max area triangle");
-    }
+    T bestPoint = null;
+    double bestArea = -1.0;
 
-    Area<T> maxArea = areas.get(0);
-    for (int i = 1; i < areas.size(); i++) {
-      Area<T> currentArea = areas.get(i);
-      if (currentArea.value() > maxArea.value()) {
-        maxArea = currentArea;
+    for (T candidate : center.points()) {
+      double area = Area.ofTriangle(leftPoint, candidate, rightCenter);
+      if (area > bestArea) {
+        bestArea = area;
+        bestPoint = candidate;
       }
     }
 
-    return maxArea.generator();
+    if (bestPoint == null) {
+      throw new IllegalStateException("Can't obtain max area triangle");
+    }
+
+    return bestPoint;
   }
 }
