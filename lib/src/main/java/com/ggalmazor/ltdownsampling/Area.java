@@ -56,4 +56,24 @@ class Area<T extends Point> {
   public double getValue() {
     return value;
   }
+
+  /**
+   * Computes the triangle area scalar for the three provided points without allocating an
+   * {@link Area} record.
+   *
+   * <p>Used in the hot inner loop of {@link Triangle#getResult()} to avoid per-candidate
+   * allocations.
+   *
+   * @param a first point of the triangle
+   * @param b second (middle) point of the triangle
+   * @param c third point of the triangle
+   * @return the area of the triangle as a scalar double value
+   */
+  static double rawArea(Point a, Point b, Point c) {
+    // area of a triangle = |[Ax(By - Cy) + Bx(Cy - Ay) + Cx(Ay - By)] / 2|
+    double sum = a.getX() * (b.getY() - c.getY())
+        + b.getX() * (c.getY() - a.getY())
+        + c.getX() * (a.getY() - b.getY());
+    return abs(sum / 2);
+  }
 }
