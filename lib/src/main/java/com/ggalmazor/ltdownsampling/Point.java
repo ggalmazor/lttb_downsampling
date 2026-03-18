@@ -16,9 +16,7 @@ public interface Point {
    * @return a {@link DoublePoint} in the geometric center between the two provided points
    */
   static DoublePoint centerBetween(Point a, Point b) {
-    DoublePoint vector = new DoublePoint(b.getX() - a.getX(), b.getY() - a.getY());
-    DoublePoint halfVector = new DoublePoint(vector.getX() / 2, vector.getY() / 2);
-    return new DoublePoint(a.getX() + halfVector.getX(), a.getY() + halfVector.getY());
+    return new DoublePoint((a.getX() + b.getX()) / 2.0, (a.getY() + b.getY()) / 2.0);
   }
 
   /**
