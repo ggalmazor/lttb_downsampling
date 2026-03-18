@@ -1,11 +1,11 @@
 # Largest-Triangle time-series downsampling algorithm implementation for modern Java
 
-> **Deprecated.** This library has been superseded by
+> [!IMPORTANT]
+> This library has been superseded by
 > [**com.ggalmazor:downsampling**](https://github.com/ggalmazor/downsampling), which provides
 > LTTB alongside RDP and PIP under a unified API. The LTTB implementation there is a direct
 > port of this library with the same algorithmic behaviour, same `Point` / `DoublePoint` data
 > contract, and the same `BucketizationStrategy.DYNAMIC` / `FIXED` options.
->
 > This repository will receive critical bug fixes only. No new features will be added here.
 > Please migrate to `com.ggalmazor:downsampling`.
 
