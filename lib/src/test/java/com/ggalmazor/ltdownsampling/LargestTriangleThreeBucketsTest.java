@@ -137,6 +137,88 @@ public class LargestTriangleThreeBucketsTest {
     );
   }
 
+  // ---- FIXED bucketization ----
+
+  @Test
+  public void fixed_evenly_spaced_matches_dynamic() {
+    // When points are evenly spaced, FIXED and DYNAMIC should select the same points
+    List<DoublePoint> input = asList(
+      DoublePoint.of(0, 0),
+      DoublePoint.of(1, 1),
+      DoublePoint.of(2, 3),
+      DoublePoint.of(3, 1),
+      DoublePoint.of(4, 3),
+      DoublePoint.of(5, 2),
+      DoublePoint.of(6, 0)
+    );
+
+    List<DoublePoint> dynamic = LTThreeBuckets.sorted(input, input.size(), 2);
+    List<DoublePoint> fixed = LTThreeBuckets.sorted(input, 2, BucketizationStrategy.FIXED);
+
+    assertThat(fixed, equalTo(dynamic));
+  }
+
+  @Test
+  public void fixed_skips_empty_buckets_in_gappy_series() {
+    // Dense cluster 0..3, gap, single point at 10
+    // With 4 buckets over [0, 10]: windows are [0,2.5), [2.5,5), [5,7.5), [7.5,10]
+    // Window 1: x=1, x=2 — Window 2: x=3 — Window 3: empty — Window 4: x=9
+    List<DoublePoint> input = asList(
+      DoublePoint.of(0, 0),
+      DoublePoint.of(1, 5),
+      DoublePoint.of(2, 3),
+      DoublePoint.of(3, 4),
+      DoublePoint.of(9, 1),
+      DoublePoint.of(10, 0)
+    );
+
+    List<DoublePoint> output = LTThreeBuckets.sorted(input, 4, BucketizationStrategy.FIXED);
+
+    // 3 non-empty middle buckets + first + last = 5 points (not 6)
+    assertThat(output.size(), equalTo(5));
+    assertThat(output.get(0), equalTo(DoublePoint.of(0, 0)));
+    assertThat(output.get(output.size() - 1), equalTo(DoublePoint.of(10, 0)));
+  }
+
+  @Test
+  public void fixed_dense_cluster_not_overrepresented() {
+    // DYNAMIC assigns 1 bucket to the dense cluster and 1 to the sparse stretch.
+    // FIXED assigns buckets proportionally to x-span, so the sparse stretch with a single
+    // high-value point gets its own bucket and is preserved in the output.
+    //
+    // Points: dense at x=0..3 (low value ~1), then sparse at x=8,9 (high value ~10)
+    // DYNAMIC with 2 buckets: bucket1=[x1,x2,x3], bucket2=[x8] — x8 may or may not win
+    // FIXED with 2 buckets over [0,9]: window1=[0,4.5)=[x1,x2,x3], window2=[4.5,9]=[x8]
+    List<DoublePoint> input = asList(
+      DoublePoint.of(0, 0),
+      DoublePoint.of(1, 1),
+      DoublePoint.of(2, 1),
+      DoublePoint.of(3, 1),
+      DoublePoint.of(8, 10),
+      DoublePoint.of(9, 0)
+    );
+
+    List<DoublePoint> output = LTThreeBuckets.sorted(input, 2, BucketizationStrategy.FIXED);
+
+    // First and last always included; the high-value sparse point must be selected
+    assertThat(output.get(0), equalTo(DoublePoint.of(0, 0)));
+    assertThat(output.get(output.size() - 1), equalTo(DoublePoint.of(9, 0)));
+    assertThat(output.stream().anyMatch(p -> p.x() == 8.0), equalTo(true));
+  }
+
+  @Test
+  public void fixed_throws_when_all_x_values_are_equal() {
+    List<DoublePoint> input = asList(
+      DoublePoint.of(1, 0),
+      DoublePoint.of(1, 1),
+      DoublePoint.of(1, 2)
+    );
+
+    assertThrows(IllegalArgumentException.class, () ->
+      LTThreeBuckets.sorted(input, 2, BucketizationStrategy.FIXED)
+    );
+  }
+
   @SuppressWarnings({"DataFlowIssue", "resource"})
   @Test
   public void complex_downsampling_scenario() throws URISyntaxException, IOException {
