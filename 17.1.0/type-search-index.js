@@ -1,0 +1,1 @@
+typeSearchIndex = [{"l":"All Classes and Interfaces","u":"allclasses-index.html"},{"p":"com.ggalmazor.ltdownsampling","l":"DoublePoint"},{"p":"com.ggalmazor.ltdownsampling","l":"LTThreeBuckets"},{"p":"com.ggalmazor.ltdownsampling","l":"Point"}];updateSearchResults();
