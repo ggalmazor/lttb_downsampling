@@ -37,15 +37,15 @@ public enum BucketizationStrategy {
    *
    * <p>Corresponds to the fixed bucket size variant in the original LTTB paper. The total
    * x range {@code [x_first, x_last]} is divided into {@code desiredBuckets} equal-width
-   * intervals. Each point is assigned to the interval that contains its {@link Point#x()}
-   * value. This works correctly whether {@code x()} represents timestamps, plain numeric
+   * intervals. Each point is assigned to the interval that contains its {@link Point#getX()}
+   * value. This works correctly whether {@code getX()} represents timestamps, plain numeric
    * indices, or any other monotonically increasing dimension.
    *
    * <p>X-intervals that contain no points are silently skipped. As a result, the output
    * may contain fewer than {@code desiredBuckets + 2} points when the input has gaps or
    * highly uneven density.
    *
-   * <p>{@link Point#x()} must be monotonically non-decreasing across the input list.
+   * <p>{@link Point#getX()} must be monotonically non-decreasing across the input list.
    */
   FIXED
 }

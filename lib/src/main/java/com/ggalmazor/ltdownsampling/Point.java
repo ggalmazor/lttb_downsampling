@@ -22,14 +22,14 @@ public interface Point {
   /**
    * Returns the x (horizontal / time) value of this point.
    *
-   * <p><strong>Contract:</strong> {@code x()} must be monotonically non-decreasing across a
+   * <p><strong>Contract:</strong> {@code getX()} must be monotonically non-decreasing across a
    * sorted input list — i.e. for any two consecutive points {@code a} and {@code b} in the list
-   * passed to {@link LTThreeBuckets#sorted}, {@code a.x() <= b.x()} must hold. The algorithm
-   * does not verify this; violating it produces undefined output.
+   * passed to {@link LTThreeBuckets#sorted}, {@code a.getX() <= b.getX()} must hold. The
+   * algorithm does not verify this; violating it produces undefined output.
    *
    * <p>This contract is also required for fixed-size bucketization
-   * ({@link BucketizationStrategy#FIXED}), where {@code x()} is used to compute equal-width
-   * x-span intervals. Non-monotonic or unordered {@code x()} values will produce incorrect
+   * ({@link BucketizationStrategy#FIXED}), where {@code getX()} is used to compute equal-width
+   * x-span intervals. Non-monotonic or unordered {@code getX()} values will produce incorrect
    * bucket assignments.
    *
    * @return the x (horizontal / time) value of this point

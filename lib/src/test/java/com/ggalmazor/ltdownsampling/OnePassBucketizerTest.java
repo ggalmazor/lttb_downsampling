@@ -171,8 +171,8 @@ public class OnePassBucketizerTest {
         OnePassBucketizer.bucketize(input, input.size(), 2, BucketizationStrategy.FIXED);
 
     assertThat(buckets, hasSize(4)); // 2 non-empty windows + first + last
-    assertThat(buckets.get(1).points().get(0).x(), equalTo(3.0)); // window 0
-    assertThat(buckets.get(2).points().get(0).x(), equalTo(7.0)); // window 1
+    assertThat(buckets.get(1).points().get(0).getX(), equalTo(3.0));
+    assertThat(buckets.get(2).points().get(0).getX(), equalTo(7.0));
   }
 
   @Test

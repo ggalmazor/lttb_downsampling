@@ -176,8 +176,8 @@ public class LargestTriangleThreeBucketsTest {
 
     // 3 non-empty middle buckets + first + last = 5 points (not 6)
     assertThat(output.size(), equalTo(5));
-    assertThat(output.get(0), equalTo(DoublePoint.of(0, 0)));
-    assertThat(output.get(output.size() - 1), equalTo(DoublePoint.of(10, 0)));
+    assertThat(output.get(0), pointAt(0, 0));
+    assertThat(output.get(output.size() - 1), pointAt(10, 0));
   }
 
   @Test
@@ -201,9 +201,9 @@ public class LargestTriangleThreeBucketsTest {
     List<DoublePoint> output = LTThreeBuckets.sorted(input, 2, BucketizationStrategy.FIXED);
 
     // First and last always included; the high-value sparse point must be selected
-    assertThat(output.get(0), equalTo(DoublePoint.of(0, 0)));
-    assertThat(output.get(output.size() - 1), equalTo(DoublePoint.of(9, 0)));
-    assertThat(output.stream().anyMatch(p -> p.x() == 8.0), equalTo(true));
+    assertThat(output.get(0), pointAt(0, 0));
+    assertThat(output.get(output.size() - 1), pointAt(9, 0));
+    assertThat(output.stream().anyMatch(p -> p.getX() == 8.0), equalTo(true));
   }
 
   @Test
