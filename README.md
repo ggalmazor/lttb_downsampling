@@ -93,6 +93,51 @@ These are close-ups for 250, 500, 1000, and 2000 buckets with raw data in the ba
 ![image](https://user-images.githubusercontent.com/205913/202486396-ff3772d3-ef69-4c69-b56c-4ac16964ed04.png)
 
 
+## Benchmarks
+
+Measured with [JMH](https://github.com/openjdk/jmh) on an Apple M3 Pro, using a fixed-seed
+synthetic time series (sinusoidal + noise + trend). All runs used the same input data.
+Results are average time per operation in milliseconds (lower is better).
+
+Run benchmarks locally with:
+
+```bash
+mise exec -- ./gradlew jmh
+```
+
+### `LTThreeBuckets.sorted` — full downsample
+
+| Input size | Buckets | 17.x (Java 17) | 21.x (Java 21) | 25.x (Java 25) |
+|---:|---:|---:|---:|---:|
+| 10,000 | 100 | 0.122 ms | 0.122 ms | 0.142 ms |
+| 10,000 | 1,000 | 0.134 ms | 0.131 ms | 0.154 ms |
+| 10,000 | 5,000 | 0.261 ms | 0.227 ms | 0.216 ms |
+| 100,000 | 100 | 1.307 ms | 1.266 ms | 1.475 ms |
+| 100,000 | 1,000 | 1.265 ms | 1.261 ms | 1.436 ms |
+| 100,000 | 5,000 | 1.259 ms | 1.265 ms | 1.411 ms |
+| 500,000 | 100 | 7.752 ms | **6.605 ms** | 7.539 ms |
+| 500,000 | 1,000 | 7.973 ms | **6.613 ms** | 8.591 ms |
+| 500,000 | 5,000 | 8.192 ms | **6.810 ms** | 7.536 ms |
+
+### `OnePassBucketizer.bucketize` — bucketization only
+
+| Input size | Buckets | 17.x (Java 17) | 21.x (Java 21) | 25.x (Java 25) |
+|---:|---:|---:|---:|---:|
+| 10,000 | 100 | 0.038 ms | 0.039 ms | 0.039 ms |
+| 10,000 | 1,000 | 0.054 ms | 0.054 ms | 0.049 ms |
+| 10,000 | 5,000 | 0.080 ms | 0.086 ms | 0.072 ms |
+| 100,000 | 100 | 0.362 ms | 0.387 ms | **0.269 ms** |
+| 100,000 | 1,000 | 0.391 ms | 0.378 ms | 0.346 ms |
+| 100,000 | 5,000 | 0.446 ms | 0.426 ms | 0.437 ms |
+| 500,000 | 100 | 2.163 ms | **2.056 ms** | **1.581 ms** |
+| 500,000 | 1,000 | 2.811 ms | **2.156 ms** | 2.408 ms |
+| 500,000 | 5,000 | 3.009 ms | **2.276 ms** | 2.081 ms |
+
+**Java 21 shows the most consistent gains** for large inputs (~15% faster than Java 17 at 500K
+points in the full downsample path), driven by improved JIT inlining of the `DoublePoint` record.
+Java 25 shows strong `bucketize` improvements at larger input sizes but higher variance in the full
+downsample path, reflecting a still-maturing JIT for the newer JDK release.
+
 ## Contributing
 
 This project enforces [Google Java Style](https://google.github.io/styleguide/javaguide.html) via Checkstyle. The configuration lives in `config/checkstyle/`. Run it with:
