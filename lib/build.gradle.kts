@@ -20,7 +20,7 @@ dependencies {
 
 java {
   toolchain {
-    languageVersion = JavaLanguageVersion.of(21)
+    languageVersion = JavaLanguageVersion.of(25)
   }
 }
 
@@ -36,7 +36,7 @@ mavenPublishing {
   publishToMavenCentral(automaticRelease = true)
   signAllPublications()
 
-  coordinates("com.ggalmazor", "lttb_downsampling", "21.0.0")
+  coordinates("com.ggalmazor", "lttb_downsampling", "25.0.0")
 
   pom {
     name.set("lttb_downsampling")
