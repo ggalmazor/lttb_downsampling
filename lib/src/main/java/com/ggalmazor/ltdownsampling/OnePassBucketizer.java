@@ -37,18 +37,14 @@ class OnePassBucketizer {
     // Add first point as the only point in the first bucket
     buckets.add(Bucket.of(input.get(0)));
 
-    // Add middle buckets using index-based iteration to avoid subList operations
+    // Add middle buckets as subList views — O(1) per bucket, no element copying
     int currentIndex = 1; // Start after the first element
     for (int bucketIndex = 0; bucketIndex < desiredBuckets; bucketIndex++) {
       int currentBucketSize = bucketIndex < remainingElements ? bucketSize + 1 : bucketSize;
+      int end = currentIndex + currentBucketSize;
 
-      List<T> bucketData = new ArrayList<>(currentBucketSize);
-      for (int i = 0; i < currentBucketSize; i++) {
-        bucketData.add(input.get(currentIndex + i));
-      }
-
-      buckets.add(Bucket.of(bucketData));
-      currentIndex += currentBucketSize;
+      buckets.add(Bucket.of(input.subList(currentIndex, end)));
+      currentIndex = end;
     }
 
     // Add last point as the only point in the last bucket
