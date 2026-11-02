@@ -2,7 +2,7 @@ plugins {
   `java-library`
   checkstyle
   id("com.vanniktech.maven.publish") version "0.37.0"
-  id("me.champeau.jmh") version "0.7.3"
+  id("me.champeau.jmh") version "0.7.4"
 }
 
 repositories {
